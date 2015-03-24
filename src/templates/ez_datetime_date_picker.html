@@ -1,0 +1,25 @@
+<div class="datepicker table-responsive">
+  <table class="table table-striped  {{ data.currentView }}-view">
+     <thead>
+         <tr>
+             <th class="left" ng-click="changeView(data.currentView, data.leftDate, $event)" ng-hide="data.leftDate.unselectable"><i class="glyphicon glyphicon-arrow-left"/></th>
+               <th class="switch" colspan="5" ng-class="{disabled: data.previousViewDate.unselectable}" ng-click="changeView(data.previousView, data.previousViewDate, $event)">{{ data.previousViewDate.display }}</th>
+             <th class="right" ng-click="changeView(data.currentView, data.rightDate, $event)" ng-hide="data.rightDate.unselectable"><i class="glyphicon glyphicon-arrow-right"/></th>
+         </tr>
+         <tr>
+             <th class="dow" ng-repeat="day in data.dayNames">{{ day }}</th>
+         </tr>
+     </thead>
+     <tbody>
+         <tr ng-if="data.currentView !== 'day'">
+             <td colspan="7">
+                <span class="{{ data.currentView }}" ng-repeat="dateObject in data.dates" ng-class="{active: dateObject.active, past: dateObject.past, future: dateObject.future, disabled: dateObject.unselectable, highlight: dateObject.highlight, current: dateObject.current}" ng-click="changeView(data.nextView, dateObject, $event)">{{ dateObject.display }}</span>
+             </td>
+         </tr>
+         <tr ng-if="data.currentView === 'day'" ng-repeat="week in data.weeks">
+           <td ng-repeat="dateObject in week.dates" ng-click="changeView(data.nextView, dateObject, $event)" class="day" ng-class="{active: dateObject.active, past: dateObject.past, future: dateObject.future, disabled: dateObject.unselectable, highlight: dateObject.highlight, current: dateObject.current}" >{{ dateObject.display }}</td>
+         </tr>
+     </tbody>
+  </table>
+</div>
+

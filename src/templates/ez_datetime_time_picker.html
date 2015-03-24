@@ -1,0 +1,49 @@
+<table class="ez-time-picker">
+  <tr>
+    <td>
+      <i class="glyphicon glyphicon-time"></i>
+    </td>
+    <td>
+      <div class="dropdown">
+        <a class="btn btn-default dropdown-toggle">
+          {{ ngModel | ezDate:options.hourFormat }}
+        </a>
+        <ul class="dropdown-menu dropdown-pointer">
+          <li ng-repeat="hour in data.hours"><a ng-click="setHour(hour)">{{ hour }}</a></li>
+        </ul>
+      </div>
+    </td>
+    <td>:</td>
+    <td>
+      <div class="dropdown">
+        <a class="btn btn-default dropdown-toggle">
+          {{ ngModel | ezDate:options.minuteFormat }}
+        </a>
+        <ul class="dropdown-menu dropdown-pointer">
+          <li ng-repeat="minute in data.minutes">
+            <a ng-click="setMinute(minute)">{{ minute }}</a>
+          </li>
+        </ul>
+      </div>
+    </td>
+    <td ng-if="options.secondsEnabled">:</td>
+    <td ng-if="options.secondsEnabled">
+      <div class="dropdown">
+        <a class="btn btn-default dropdown-toggle">
+          {{ ngModel | ezDate:options.secondFormat }}
+        </a>
+        <ul class="dropdown-menu dropdown-pointer">
+          <li ng-repeat="second in data.seconds">
+            <a ng-click="setSecond(second)">{{ second }}</a>
+          </li>
+        </ul>
+      </div>
+    </td>
+
+    <td></td>
+    <td>
+      <a class="btn btn-default meridiem-btn" ng-click="toggleMeridiem()">{{ ngModel | ezDate:options.meridiemFormat }}</a>
+    </td>
+  </tr>
+</table>
+

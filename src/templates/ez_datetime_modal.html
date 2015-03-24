@@ -1,0 +1,30 @@
+<div class="ez-datetime-modal">
+  <div class="modal-header">
+    <button type="button" class="close" ng-click="dismiss()">
+      <span>×</span>
+    </button>
+
+    <h4 class="modal-title">
+      {{ options.heading }}
+    </h4>
+  </div>
+  <div class="modal-body">
+    <div ng-if="!options.rangeEnabled">
+      <div ez-date-picker ng-model="form.date" from="form.from" to="form.to" options="options"></div>
+
+      <hr>
+
+      <div ng-if="options.timepickerEnabled" ez-time-picker ng-model="form.date" options="options"></div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a class="btn btn-default" ng-click="dismiss()">
+      <i class="glyphicon glyphicon-remove"></i>
+      {{ options.cancelBtnText }}
+    </a>
+    <a class="btn btn-lg btn-primary" ng-click="ok()">
+      <i class="glyphicon glyphicon-ok"></i>
+      {{ options.okBtnText }}
+    </a>
+  </div>
+</div>

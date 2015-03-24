@@ -1,0 +1,30 @@
+{
+  "name": "ez-datetime",
+  "description": "Angular datetime picker directive",
+  "keywords": [],
+  "version": "0.0.1",
+  "author": "Joris de Wit",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  },
+  "scripts": {},
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-angular-templates": "^0.5.7",
+    "grunt-bump": "0.0.11",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-cssmin": "^0.12.2",
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-contrib-less": "^1.0.0",
+    "grunt-contrib-uglify": "latest"
+  },
+  "dependencies": {
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}
