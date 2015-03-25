@@ -30,7 +30,6 @@ angular.module('ez.datetime').directive('ezDatePicker', [
         var resolveHighlight = function(date, activeDateUnix, dateValue) {
           var dateUnix;
 
-
           // highlight the range of days that are between the from date and the active date
           if (!!attrs.from && !!scope.from) {
             dateUnix = moment(date).unix();

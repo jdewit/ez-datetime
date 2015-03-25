@@ -158,7 +158,6 @@ angular.module('ez.datetime').directive('ezDatePicker', [
         var resolveHighlight = function(date, activeDateUnix, dateValue) {
           var dateUnix;
 
-
           // highlight the range of days that are between the from date and the active date
           if (!!attrs.from && !!scope.from) {
             dateUnix = moment(date).unix();
@@ -463,16 +462,19 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
           }
 
           // try to init from from/to scope attributes
+          //
+          scope.form.from = scope.from;
+          scope.form.to = scope.to;
+
+          scope.form.isFrom = !!attrs.to && !!scope.form.to;
+          scope.form.isTo = !!attrs.from && !!scope.form.from;
+
           if (!scope.form.from && !scope.from) {
             scope.form.from = moment().format(scope.options.modelFormat);
-          } else {
-            scope.form.from = scope.from;
           }
 
           if (!scope.form.to && !scope.to) {
             scope.form.to = moment().format(scope.options.modelFormat);
-          } else {
-            scope.form.to = scope.to;
           }
 
           $modal.open({
