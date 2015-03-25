@@ -409,7 +409,6 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
     return {
       restrict: 'EA',
       require: 'ngModel',
-      replace: true,
       scope: {
         ngModel: '=?',
         from: '=?',
@@ -417,7 +416,7 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
         config: '=?'
       },
       link: function(scope, $element, attrs, ngModel) {
-        var template = 'ez_datetime_modal.html';
+        var rangeEnabled = false;
 
         scope.form = {};
 
@@ -426,7 +425,7 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
         ConfigService.resolve(scope, attrs);
 
         if (!!attrs.from && !!attrs.to) {
-          template = 'ez_datetime_range_modal.html';
+          rangeEnabled = true;
         }
 
         ngModel.$formatters.push(function(v) {
@@ -440,23 +439,52 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
         $element.bind('click', function() {
 
           scope.form.date = ngModel.$modelValue;
-          scope.form.from = scope.from;
-          scope.form.to = scope.to;
+
+          // try to init from ngModel value first
+          if (!!scope.form.date) {
+            if (!!scope.form.date.from) {
+              scope.form.from = scope.form.date.from;
+            }
+
+            if (!!scope.form.date.to) {
+              scope.form.to = scope.form.date.to;
+            }
+          }
+
+          // try to init from from/to scope attributes
+          if (!scope.form.from) {
+            scope.form.from = moment().format(scope.options.modelFormat);
+          } else {
+            scope.form.from = scope.from;
+          }
+
+          if (!scope.form.to) {
+            scope.form.to = moment().format(scope.options.modelFormat);
+          } else {
+            scope.form.to = scope.to;
+          }
 
           $modal.open({
-            templateUrl: template,
+            templateUrl: rangeEnabled ? 'ez_datetime_range_modal.html' : 'ez_datetime_modal.html',
             controller: 'EzDatetimeModalController',
             scope: scope,
           }).result.then(function() {
             scope.from = scope.form.from;
             scope.to = scope.form.to;
 
-            ngModel.$setViewValue({
-              from: scope.from,
-              to: scope.to
-            });
+            // timeout needed to let scope update before ng-change is fired
+            setTimeout(function() {
+              if (rangeEnabled) {
+                ngModel.$setViewValue({
+                  from: scope.from,
+                  to: scope.to
+                });
+              } else {
+                ngModel.$setViewValue(scope.form.date);
+              }
 
-            ngModel.$render();
+              ngModel.$render();
+            });
           });
         });
 

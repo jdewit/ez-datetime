@@ -6,11 +6,12 @@
 }
 .ez-datetime-modal .range-table {
   width: 100%;
-  /*border-spacing: 2px;*/
-  /*border-collapse: separate;*/
 }
 .ez-datetime-modal .range-table .datepicker {
   border: 1px solid #ddd;
+}
+.ez-datetime-control {
+  cursor: pointer;
 }
 .ez-time-picker {
   display: inline-block;
