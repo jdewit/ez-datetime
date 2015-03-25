@@ -76,6 +76,18 @@
     Model value => {{ form.date4Range || 'null' }}
 
     <hr>
+
+    <h3>Input Range Selector</h3>
+
+    <form name="_form5">
+      <input class="form-control" type="text" ez-datetime-control ng-model="form.date5Range" from="form.date5RangeFrom" to="form.date5RangeTo" />
+    </form>
+    Form Dirty State => {{ _form5.$dirty }}
+    <br>
+    Model value => {{ form.date5Range || 'null' }}
+
+    <hr>
+
     <h3>Input Control Range</h3>
     <div class="row">
       <div class="col-lg-5 col-md-5">

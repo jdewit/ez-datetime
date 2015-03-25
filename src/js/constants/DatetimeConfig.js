@@ -25,6 +25,13 @@ angular.module('ez.datetime')
     viewFormat: 'MMM Do YYYY [at] h:mma',
 
     /**
+     * The date to bind ng-model with
+     *
+     * options: ["default", "from", "to"]
+     */
+    modelBinding: 'default',
+
+    /**
      * Enable time selection
      */
     timepickerEnabled: true,

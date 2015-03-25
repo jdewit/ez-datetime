@@ -9,7 +9,7 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
       restrict: 'EA',
       require: 'ngModel',
       scope: {
-        ngModel: '=?',
+        ngModel: '=',
         from: '=?',
         to: '=?',
         config: '=?'
@@ -29,7 +29,11 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
 
         ngModel.$formatters.push(function(v) {
           if (v) {
-            v = moment(v).format(scope.options.viewFormat);
+            if (rangeEnabled && scope.options.modelBinding === 'default') {
+              v = moment(v.from).format(scope.options.viewFormat) + ' - ' + moment(v.to).format(scope.options.viewFormat);
+            } else {
+              v = moment(v).format(scope.options.viewFormat);
+            }
           }
 
           return v;
@@ -51,13 +55,13 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
           }
 
           // try to init from from/to scope attributes
-          if (!scope.form.from) {
+          if (!scope.form.from && !scope.from) {
             scope.form.from = moment().format(scope.options.modelFormat);
           } else {
             scope.form.from = scope.from;
           }
 
-          if (!scope.form.to) {
+          if (!scope.form.to && !scope.to) {
             scope.form.to = moment().format(scope.options.modelFormat);
           } else {
             scope.form.to = scope.to;
@@ -71,19 +75,26 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
             scope.from = scope.form.from;
             scope.to = scope.form.to;
 
-            // timeout needed to let scope update before ng-change is fired
-            setTimeout(function() {
-              if (rangeEnabled) {
-                ngModel.$setViewValue({
+            if (rangeEnabled) {
+              switch(scope.options.modelBinding) {
+              case 'default':
+                scope.ngModel = {
                   from: scope.from,
                   to: scope.to
-                });
-              } else {
-                ngModel.$setViewValue(scope.form.date);
+                };
+                break;
+              case 'from':
+                scope.ngModel = scope.from;
+                break;
+              case 'to':
+                scope.ngModel = scope.to;
+                break;
               }
+            } else {
+              scope.ngModel = scope.form.date;
+            }
 
-              ngModel.$render();
-            });
+            ngModel.$setDirty();
           });
         });
 
