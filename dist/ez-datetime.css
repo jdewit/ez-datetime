@@ -10,6 +10,10 @@
 .ez-datetime-modal .range-table .datepicker {
   border: 1px solid #ddd;
 }
+.ez-datetime-modal .hr {
+  border: 0.5px solid #ddd;
+  padding: 0 10px;
+}
 .ez-datetime-control {
   cursor: pointer;
 }

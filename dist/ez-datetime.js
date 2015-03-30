@@ -407,9 +407,13 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 
 angular.module('ez.datetime').directive('ezDatetimeControl', [
   'EzDatetimeConfigService',
+  '$parse',
+  '$timeout',
   '$modal',
   function(
     ConfigService,
+    $parse,
+    $timeout,
     $modal
   ) {
     return {
@@ -502,6 +506,12 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
               }
             } else {
               scope.ngModel = scope.form.date;
+            }
+
+            if (!!attrs.ngChange) {
+              $timeout(function() {
+                $parse(attrs.ngChange)(scope.$parent);
+              });
             }
 
             ngModel.$setDirty();

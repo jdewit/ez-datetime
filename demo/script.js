@@ -30,4 +30,8 @@ app.controller('myCtrl', function($scope) {
   $scope.clear = function(property) {
     $scope.form[property] = null;
   };
+
+  $scope.log = function(text) {
+    console.log(text);
+  };
 });

@@ -54,7 +54,7 @@
 
     <form name="_form">
       <div class="input-group">
-        <input class="form-control" ez-datetime-control type="text" ng-model="form.date3" view-format="YYYY-MM-DD h:mma" />
+        <input class="form-control" ez-datetime-control type="text" ng-model="form.date3" view-format="YYYY-MM-DD h:mma" ng-change="log('date3 changed')"/>
         <div class="input-group-addon">
           <a ez-datetime-control ng-model="form.date3" view-format="YYYY-MM-DD h:mma">
             <i class="glyphicon glyphicon-calendar"></i>
@@ -80,7 +80,7 @@
     <h3>Input Range Selector</h3>
 
     <form name="_form5">
-      <input class="form-control" type="text" ez-datetime-control ng-model="form.date5Range" from="form.date5RangeFrom" to="form.date5RangeTo" />
+      <input class="form-control" type="text" ez-datetime-control ng-model="form.date5Range" from="form.date5RangeFrom" to="form.date5RangeTo" ng-change="log('date5Range changed')"/>
     </form>
     Form Dirty State => {{ _form5.$dirty }}
     <br>
