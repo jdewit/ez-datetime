@@ -1,7 +1,7 @@
 angular.module('ez.datetime').directive('ezDatePicker', [
-  'EzDatetimeConfigService',
+  'EzDatetimeService',
   function datepickerDirective(
-    ConfigService
+    DatetimeService
   ) {
 
     return {
@@ -18,7 +18,7 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 
         scope.date = null;
 
-        ConfigService.resolve(scope, attrs);
+        DatetimeService.resolveConfig(scope, attrs);
 
         var startOfDecade = function startOfDecade(unixDate) {
           var startYear = (parseInt(moment(unixDate).year() / 10, 10) * 10);
@@ -28,34 +28,49 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 
         // highlight items that are within the selected range
         var resolveHighlight = function(date, activeDateUnix, dateValue) {
-          var dateUnix;
+          var dateUnix = moment(date).unix();
+          var fromUnix, toUnix;
 
-          // highlight the range of days that are between the from date and the active date
-          if (!!attrs.from && !!scope.from) {
-            dateUnix = moment(date).unix();
+          if (scope.options.rangeEnabled) {
+            // highlight the range of days that are between the from date and the active date
+            if (!!attrs.from && !!scope.from) {
+              fromUnix = moment(scope.from).unix();
 
-            var fromUnix = moment(scope.from).unix();
+              if (!!activeDateUnix && dateUnix >= fromUnix && dateUnix < activeDateUnix) {
+                dateValue.highlight = true;
+              }
 
-            if (!!activeDateUnix && dateUnix >= fromUnix && dateUnix < activeDateUnix) {
-              dateValue.highlight = true;
+              if (dateUnix < fromUnix) {
+                dateValue.unselectable = true;
+              }
+            } else if (!!attrs.to && !!scope.to) {
+              // highlight the range of days that are between the active date and the to date
+
+              toUnix = moment(scope.to).unix();
+
+              if (!!activeDateUnix && dateUnix <= toUnix && dateUnix > activeDateUnix) {
+                dateValue.highlight = true;
+              }
+
+              if (dateUnix > toUnix) {
+                dateValue.unselectable = true;
+              }
+            }
+          } else {
+            if (!!scope.from) {
+              fromUnix = moment(scope.from).unix();
+
+              if (dateUnix < fromUnix) {
+                dateValue.unselectable = true;
+              }
             }
 
-            if (dateUnix < fromUnix) {
-              dateValue.unselectable = true;
-            }
-          } else if (!!attrs.to && !!scope.to) {
-            // highlight the range of days that are between the active date and the to date
+            if (!!scope.to) {
+              toUnix = moment(scope.to).unix();
 
-            dateUnix = moment(date).unix();
-
-            var toUnix = moment(scope.to).unix();
-
-            if (!!activeDateUnix && dateUnix <= toUnix && dateUnix > activeDateUnix) {
-              dateValue.highlight = true;
-            }
-
-            if (dateUnix > toUnix) {
-              dateValue.unselectable = true;
+              if (dateUnix > toUnix) {
+                dateValue.unselectable = true;
+              }
             }
           }
         };
@@ -159,6 +174,7 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 
             if (scope.options.timepickerEnabled) {
               var currentDate = moment(ngModel.$viewValue);
+
               // make time match current time
               startOfMonth.hours(currentDate.hours());
               startOfMonth.minutes(currentDate.minutes());
@@ -220,14 +236,16 @@ angular.module('ez.datetime').directive('ezDatePicker', [
           },
 
           setTime: function setTime(date) {
-            if (typeof date === 'string') {
-              date = moment(date);
+            var v = moment(date).format(scope.options.modelFormat);
+
+            if (scope.options.modelFormat === 'x' || scope.options.modelFormat === 'X') {
+              v = parseInt(v, 10);
             }
 
-            ngModel.$setViewValue(moment(date).format(scope.options.modelFormat));
+            ngModel.$setViewValue(v);
             ngModel.$render();
 
-            return dataFactory[scope.options.minView](date);
+            return dataFactory[scope.options.minView](moment(date));
           }
         };
 
@@ -248,7 +266,15 @@ angular.module('ez.datetime').directive('ezDatePicker', [
           if (!scope.view) {
             scope.view = scope.options.startView;
 
-            scope.data = dataFactory[scope.view](ngModel.$viewValue);
+            var v = ngModel.$viewValue;
+
+            if (typeof v === 'string' && !isNaN(v)) {
+              v = parseInt(v, 10);
+
+              ngModel.$setViewValue(v);
+            }
+
+            scope.data = dataFactory[scope.view](v);
           }
         };
 

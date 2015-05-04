@@ -6,6 +6,10 @@ angular.module('ez.datetime').filter('ezDate', [
         return;
       }
 
+      if (!isNaN(v)) {
+        v = parseInt(v, 10);
+      }
+
       return moment(v).format(format);
     };
   }

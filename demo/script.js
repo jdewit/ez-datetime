@@ -2,7 +2,9 @@ var app = angular.module('myApp', ['ez.datetime', 'ez.modal', 'ez.dropdown']);
 
 app.controller('myCtrl', function($scope) {
   $scope.form = {
-    //date3: moment().format()
+    date1: moment().format(),
+    date3From: moment().subtract(5, 'days').format(),
+    date3To: moment().add(5, 'days').format()
   };
 
   $scope.config1 = {

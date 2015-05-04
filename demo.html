@@ -15,7 +15,7 @@
 
 
 		<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.js"></script>
 
     <script src="https://rawgit.com/jdewit/ez-transition/master/dist/ez-transition.min.js"></script>
@@ -39,7 +39,7 @@
   <div ng-controller="myCtrl" class="col-lg-6 col-md-6">
     <h3>Button Control</h3>
 
-    <a class="btn btn-default" ez-datetime-control ng-model="form.date1" config="config1">
+    <a class="btn btn-default" ez-datetime-control ng-model="form.date1" config="config1" model-format="x">
       <i class="glyphicon glyphicon-calendar"></i>
       {{ form.date1 ? (form.date1 | ezDate:'MMMM Do, YYYY [at] h:mma') : 'Pick a Date' }}
     </a>
@@ -50,11 +50,13 @@
     Model value => {{ form.date1 || 'null' }}
 
     <hr>
-    <h3>Input Control</h3>
+    <h3>Input Control - limit range</h3>
 
     <form name="_form">
       <div class="input-group">
-        <input class="form-control" ez-datetime-control type="text" ng-model="form.date3" view-format="YYYY-MM-DD h:mma" ng-change="log('date3 changed')"/>
+
+        <input class="form-control" ez-datetime-control type="text" ng-model="form.date3" from="form.date3From" to="form.date3To" view-format="YYYY-MM-DD h:mma" ng-change="log('date3 changed')"/>
+
         <div class="input-group-addon">
           <a ez-datetime-control ng-model="form.date3" view-format="YYYY-MM-DD h:mma">
             <i class="glyphicon glyphicon-calendar"></i>
@@ -67,7 +69,7 @@
     <h3>Range Selector</h3>
 
     <form name="_form4">
-      <a ez-datetime-control ng-model="form.date4Range" from="form.date4RangeFrom" to="form.date4RangeTo" />
+      <a ez-datetime-control ng-model="form.date4Range" from="form.date4RangeFrom" to="form.date4RangeTo" range-enabled="true"/>
         {{ (form.date4Range.from | ezDate:'MMM Do, YYYY [at] h:mma')|| 'Start Date' }} - {{ (form.date4Range.to | ezDate:'MMM Do, YYYY [at] h:mma') || 'End Date' }}
       </a>
     </form>

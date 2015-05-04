@@ -1,7 +1,7 @@
 angular.module('ez.datetime').directive('ezTimePicker', [
-  'EzDatetimeConfigService',
+  'EzDatetimeService',
   function(
-    ConfigService
+    DatetimeService
   ) {
     return {
       restrict: 'EA',
@@ -13,7 +13,7 @@ angular.module('ez.datetime').directive('ezTimePicker', [
       },
       link: function(scope, $element, attrs, ngModel) {
 
-        ConfigService.resolve(scope, attrs);
+        DatetimeService.resolveConfig(scope, attrs);
 
         function init() {
           scope.data = {
@@ -49,7 +49,7 @@ angular.module('ez.datetime').directive('ezTimePicker', [
 
           ngModel.$render = function() {
             if (!ngModel.$viewValue) {
-              scope.ngModel = moment().format(scope.options.modelFormat);
+              scope.ngModel = moment().format();
             }
           };
 

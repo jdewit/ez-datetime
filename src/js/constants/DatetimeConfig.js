@@ -32,6 +32,11 @@ angular.module('ez.datetime')
     modelBinding: 'default',
 
     /**
+     * Enable range selector
+     */
+    rangeEnabled: false,
+
+    /**
      * Enable time selection
      */
     timepickerEnabled: true,
@@ -99,8 +104,7 @@ angular.module('ez.datetime')
     /**
      * Modal cancel button text
      */
-    cancelBtnText: 'Cancel'
-
+    cancelBtnText: 'Cancel',
 
   })
 ;

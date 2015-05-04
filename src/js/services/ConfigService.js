@@ -1,4 +1,4 @@
-angular.module('ez.datetime').service('EzDatetimeConfigService', [
+angular.module('ez.datetime').service('EzDatetimeService', [
   '$parse',
   'EzDatetimeConfig',
   function(
@@ -10,7 +10,7 @@ angular.module('ez.datetime').service('EzDatetimeConfigService', [
       /**
        * Resolve options passed into "config" attr or any options set via attrs
        */
-      resolve: function(scope, attrs) {
+      resolveConfig: function(scope, attrs) {
         if (attrs.options) {
           return scope.options;
         } else {

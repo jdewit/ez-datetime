@@ -9,9 +9,12 @@
     </h4>
   </div>
   <div class="modal-body">
-    <div ng-if="!form.isFrom && !form.isTo" ez-date-picker ng-model="form.date" options="options"></div>
-    <div ng-if="form.isFrom" ez-date-picker ng-model="form.date" to="form.to" options="options"></div>
-    <div ng-if="form.isTo" ez-date-picker ng-model="form.date" from="form.from" options="options"></div>
+    <div ng-if="!options.rangeEnabled" ez-date-picker from="form.from" to="form.to" ng-model="form.date" options="options"></div>
+
+    <div ng-if="options.rangeEnabled">
+      <div ez-date-picker ng-model="form.date" to="form.to" options="options"></div>
+      <div ez-date-picker ng-model="form.date" from="form.from" options="options"></div>
+    </div>
 
     <div ng-if="options.timepickerEnabled">
       <hr>
