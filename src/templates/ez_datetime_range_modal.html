@@ -7,8 +7,8 @@
     <h4 class="modal-title">
       {{ options.rangeHeading }}:
       <span>
-        <small>{{ !!form.from ? (form.from | ezDate:'lll') : 'No time selected' }}</small>
-        <small>- {{ !!form.to ? (form.to | ezDate:'lll') : 'No time selected' }}</small>
+        <small>{{ !!form.from ? (form.from | ezDate:'lll') : options.nullText }}</small>
+        <small>- {{ !!form.to ? (form.to | ezDate:'lll') : options.nullText }}</small>
       </span>
     </h4>
   </div>

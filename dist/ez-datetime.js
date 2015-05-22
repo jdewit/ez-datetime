@@ -108,6 +108,11 @@ angular.module('ez.datetime')
    */
   cancelBtnText: 'Cancel',
 
+  /**
+   * Text to show in modal heading if date has not yet been selected
+   */
+  nullText: 'No date selected'
+
 });
 
 angular.module('ez.datetime').controller('EzDatetimeModalController', [
