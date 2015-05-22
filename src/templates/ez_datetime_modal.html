@@ -5,31 +5,23 @@
     </button>
 
     <h4 class="modal-title">
-      {{ options.heading }}
+      {{ options.heading }}: <small>{{ form.date | ezDate:'lll' }}</small>
     </h4>
   </div>
   <div class="modal-body">
-    <div ng-if="!options.rangeEnabled" ez-date-picker from="form.from" to="form.to" ng-model="form.date" options="options"></div>
+    <div ez-date-picker from="form.from" to="form.to" ng-model="form.date" options="options"></div>
 
-    <div ng-if="options.rangeEnabled">
-      <div ez-date-picker ng-model="form.date" to="form.to" options="options"></div>
-      <div ez-date-picker ng-model="form.date" from="form.from" options="options"></div>
-    </div>
-
-    <div ng-if="options.timepickerEnabled">
+    <div ng-if="options.timepickerEnabled && !!form.date">
       <hr>
       <div ez-time-picker ng-model="form.date" options="options"></div>
     </div>
-
   </div>
   <div class="modal-footer">
     <a class="btn btn-default" ng-click="dismiss()">
-      <i class="glyphicon glyphicon-remove"></i>
-      {{ options.cancelBtnText }}
+      <i class="glyphicon glyphicon-remove"></i> {{ options.cancelBtnText }}
     </a>
     <a class="btn btn-lg btn-primary" ng-click="ok()">
-      <i class="glyphicon glyphicon-ok"></i>
-      {{ options.okBtnText }}
+      <i class="glyphicon glyphicon-ok"></i> {{ options.okBtnText }}
     </a>
   </div>
 </div>

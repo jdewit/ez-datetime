@@ -1,110 +1,109 @@
 angular.module('ez.datetime')
 
-  .constant('EzDatetimeConfig', {
+.constant('EzDatetimeConfig', {
 
-    /**
-     * The minimum view of the calendar
-     * @options [year, month, day]
-     */
-    minView: 'day',
+  /**
+   * The minimum view of the calendar
+   * @options [year, month, day]
+   */
+  minView: 'day',
 
-    /**
-     * The start view of the calendar
-     * @options [year, month, day]
-     */
-    startView: 'day',
+  /**
+   * The start view of the calendar
+   * @options [year, month, day]
+   */
+  startView: 'day',
 
-    /**
-     * The momentjs date format for the model data
-     */
-    modelFormat: undefined, // defaults to ISO-8601
+  /**
+   * The momentjs date format for the model data
+   */
+  modelFormat: undefined, // defaults to ISO-8601
 
-    /**
-     * The momentjs date format for the view data
-     */
-    viewFormat: 'MMM Do YYYY [at] h:mma',
+  /**
+   * The momentjs date format for the view data
+   */
+  viewFormat: 'MMM Do YYYY [at] h:mma',
 
-    /**
-     * The date to bind ng-model with
-     *
-     * options: ["default", "from", "to"]
-     */
-    modelBinding: 'default',
+  /**
+   * The date to bind ng-model with
+   *
+   * options: ["default", "from", "to"]
+   */
+  modelBinding: 'default',
 
-    /**
-     * Enable range selector
-     */
-    rangeEnabled: false,
+  /**
+   * Enable range selector
+   */
+  rangeEnabled: false,
 
-    /**
-     * Enable time selection
-     */
-    timepickerEnabled: true,
+  /**
+   * Enable time selection
+   */
+  timepickerEnabled: true,
 
-    /**
-     * Seconds enabled?
-     */
-    secondsEnabled: false,
+  /**
+   * Seconds enabled?
+   */
+  secondsEnabled: false,
 
-    /**
-     * Show AM/PM ?
-     */
-    meridiemEnabled: true,
+  /**
+   * Show AM/PM ?
+   */
+  meridiemEnabled: true,
 
-    /**
-     * Increment/decrement hour options by...
-     */
-    hourStep: 1,
+  /**
+   * Increment/decrement hour options by...
+   */
+  hourStep: 1,
 
-    /**
-     * Increment/decrement minute options by...
-     */
-    minuteStep: 15,
+  /**
+   * Increment/decrement minute options by...
+   */
+  minuteStep: 15,
 
-    /**
-     * Increment/decrement second options by...
-     */
-    secondStep: 15,
+  /**
+   * Increment/decrement second options by...
+   */
+  secondStep: 15,
 
-    /**
-     * Timepicker hour format
-     */
-    hourFormat: 'h',
+  /**
+   * Timepicker hour format
+   */
+  hourFormat: 'h',
 
-    /**
-     * Timepicker minute format
-     */
-    minuteFormat: 'mm',
+  /**
+   * Timepicker minute format
+   */
+  minuteFormat: 'mm',
 
-    /**
-     * Timepicker second format
-     */
-    secondFormat: 'ss',
+  /**
+   * Timepicker second format
+   */
+  secondFormat: 'ss',
 
-    /**
-     * Timepicker meridiem format
-     */
-    meridiemFormat: 'A',
+  /**
+   * Timepicker meridiem format
+   */
+  meridiemFormat: 'A',
 
-    /**
-     * Modal heading
-     */
-    heading: 'Select a Date',
+  /**
+   * Modal heading
+   */
+  heading: 'Select a Date',
 
-    /**
-     * Modal range heading
-     */
-    rangeHeading: 'Select a Start & End Date',
+  /**
+   * Modal range heading
+   */
+  rangeHeading: 'Select a Start & End Date',
 
-    /**
-     * Modal ok button text
-     */
-    okBtnText: 'OK',
+  /**
+   * Modal ok button text
+   */
+  okBtnText: 'OK',
 
-    /**
-     * Modal cancel button text
-     */
-    cancelBtnText: 'Cancel',
+  /**
+   * Modal cancel button text
+   */
+  cancelBtnText: 'Cancel',
 
-  })
-;
+});

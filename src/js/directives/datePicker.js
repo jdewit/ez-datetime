@@ -212,7 +212,9 @@ angular.module('ez.datetime').directive('ezDatePicker', [
             }
 
             for (var i = 0; i < 6; i += 1) {
-              var week = {dates: []};
+              var week = {
+                dates: []
+              };
               for (var j = 0; j < 7; j += 1) {
                 var dayMoment = moment(startDate).add((i * 7) + j, 'days');
 
@@ -234,7 +236,6 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 
             return result;
           },
-
           setTime: function setTime(date) {
             var v = moment(date).format(scope.options.modelFormat);
 
@@ -257,7 +258,25 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 
           scope.view = viewName;
 
+
           if (!!scope.view && !!scope.view && !dateObject.unselectable && dataFactory[scope.view] && !!dateObject.dateValue) {
+
+            if (viewName === 'setTime') {
+              if (dateObject.dateValue.format() === moment(ngModel.$modelValue).format()) {
+                dateObject.active = false;
+
+                scope.data.weeks.forEach(function(w) {
+                  w.dates.forEach(function(d) {
+                    d.highlight = false;
+                  });
+                });
+
+                ngModel.$setViewValue(null);
+
+                return;
+              }
+            }
+
             scope.data = dataFactory[scope.view](dateObject.dateValue);
           }
         };
@@ -281,9 +300,7 @@ angular.module('ez.datetime').directive('ezDatePicker', [
         if (!!attrs.from) {
           scope.$watch('from', function(newVal, oldVal) {
             if (newVal !== oldVal) {
-              scope.changeView(scope.view, {
-                dateValue: ngModel.$viewValue
-              });
+              ngModel.$render();
             }
           });
         }
@@ -291,9 +308,7 @@ angular.module('ez.datetime').directive('ezDatePicker', [
         if (!!attrs.to) {
           scope.$watch('to', function(newVal, oldVal) {
             if (newVal !== oldVal) {
-              scope.changeView(scope.view, {
-                dateValue: ngModel.$viewValue
-              });
+              ngModel.$render();
             }
           });
         }

@@ -47,11 +47,11 @@ angular.module('ez.datetime').directive('ezTimePicker', [
             s = s + scope.options.secondStep;
           }
 
-          ngModel.$render = function() {
-            if (!ngModel.$viewValue) {
-              scope.ngModel = moment().format();
-            }
-          };
+          //ngModel.$render = function() {
+          //if (!ngModel.$viewValue) {
+          //scope.ngModel = moment().format();
+          //}
+          //};
 
         }
 
@@ -101,5 +101,3 @@ angular.module('ez.datetime').directive('ezTimePicker', [
     };
   }
 ]);
-
-

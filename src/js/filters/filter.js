@@ -1,6 +1,5 @@
 angular.module('ez.datetime').filter('ezDate', [
-  function(
-  ) {
+  function() {
     return function(v, format) {
       if (!v) {
         return;
@@ -14,4 +13,3 @@ angular.module('ez.datetime').filter('ezDate', [
     };
   }
 ]);
-

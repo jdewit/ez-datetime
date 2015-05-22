@@ -6,7 +6,6 @@ angular.module('ez.datetime').controller('EzDatetimeModalController', [
     $modalInstance
   ) {
 
-
     $scope.dismiss = function() {
       $modalInstance.dismiss();
     };

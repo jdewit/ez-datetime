@@ -30,4 +30,3 @@ angular.module('ez.datetime').service('EzDatetimeService', [
     };
   }
 ]);
-

@@ -73,19 +73,19 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
             scope.to = scope.form.to;
 
             if (scope.options.rangeEnabled) {
-              switch(scope.options.modelBinding) {
-              case 'default':
-                scope.ngModel = {
-                  from: scope.from,
-                  to: scope.to
-                };
-                break;
-              case 'from':
-                scope.ngModel = scope.from;
-                break;
-              case 'to':
-                scope.ngModel = scope.to;
-                break;
+              switch (scope.options.modelBinding) {
+                case 'default':
+                  scope.ngModel = {
+                    from: scope.from,
+                    to: scope.to
+                  };
+                  break;
+                case 'from':
+                  scope.ngModel = scope.from;
+                  break;
+                case 'to':
+                  scope.ngModel = scope.to;
+                  break;
               }
             } else {
               scope.ngModel = scope.form.date;
@@ -105,4 +105,3 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
     };
   }
 ]);
-

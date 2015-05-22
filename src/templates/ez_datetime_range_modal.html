@@ -5,7 +5,11 @@
     </button>
 
     <h4 class="modal-title">
-      {{ options.rangeHeading }}
+      {{ options.rangeHeading }}:
+      <span>
+        <small>{{ !!form.from ? (form.from | ezDate:'lll') : 'No time selected' }}</small>
+        <small>- {{ !!form.to ? (form.to | ezDate:'lll') : 'No time selected' }}</small>
+      </span>
     </h4>
   </div>
   <div class="modal-body">
@@ -13,29 +17,31 @@
       <div class="col-lg-6 col-md-6 col-sm-6">
         <div ez-date-picker ng-model="form.from" to="form.to" options="options"></div>
 
-        <hr>
+        <div ng-if="options.timepickerEnabled && !!form.from">
+          <hr>
 
-        <div ng-if="options.timepickerEnabled" ez-time-picker ng-model="form.from" options="options"></div>
+          <div ez-time-picker ng-model="form.from" options="options"></div>
+        </div>
 
       </div>
       <div class="col-lg-6 col-md-6 col-sm-6">
         <div ez-date-picker ng-model="form.to" from="form.from" options="options"></div>
 
-        <hr>
+        <div ng-if="options.timepickerEnabled && !!form.to">
+          <hr>
 
-        <div ng-if="options.timepickerEnabled" ez-time-picker ng-model="form.to" options="options"></div>
+          <div ez-time-picker ng-model="form.to" options="options"></div>
+        </div>
       </div>
     </div>
 
   </div>
   <div class="modal-footer">
     <a class="btn btn-default" ng-click="dismiss()">
-      <i class="glyphicon glyphicon-remove"></i>
-      {{ options.cancelBtnText }}
+      <i class="glyphicon glyphicon-remove"></i> {{ options.cancelBtnText }}
     </a>
     <a class="btn btn-lg btn-primary" ng-click="ok()">
-      <i class="glyphicon glyphicon-ok"></i>
-      {{ options.okBtnText }}
+      <i class="glyphicon glyphicon-ok"></i> {{ options.okBtnText }}
     </a>
   </div>
 </div>

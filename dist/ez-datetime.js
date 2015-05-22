@@ -2,114 +2,113 @@ angular.module('ez.datetime', []);
 
 angular.module('ez.datetime')
 
-  .constant('EzDatetimeConfig', {
+.constant('EzDatetimeConfig', {
 
-    /**
-     * The minimum view of the calendar
-     * @options [year, month, day]
-     */
-    minView: 'day',
+  /**
+   * The minimum view of the calendar
+   * @options [year, month, day]
+   */
+  minView: 'day',
 
-    /**
-     * The start view of the calendar
-     * @options [year, month, day]
-     */
-    startView: 'day',
+  /**
+   * The start view of the calendar
+   * @options [year, month, day]
+   */
+  startView: 'day',
 
-    /**
-     * The momentjs date format for the model data
-     */
-    modelFormat: undefined, // defaults to ISO-8601
+  /**
+   * The momentjs date format for the model data
+   */
+  modelFormat: undefined, // defaults to ISO-8601
 
-    /**
-     * The momentjs date format for the view data
-     */
-    viewFormat: 'MMM Do YYYY [at] h:mma',
+  /**
+   * The momentjs date format for the view data
+   */
+  viewFormat: 'MMM Do YYYY [at] h:mma',
 
-    /**
-     * The date to bind ng-model with
-     *
-     * options: ["default", "from", "to"]
-     */
-    modelBinding: 'default',
+  /**
+   * The date to bind ng-model with
+   *
+   * options: ["default", "from", "to"]
+   */
+  modelBinding: 'default',
 
-    /**
-     * Enable range selector
-     */
-    rangeEnabled: false,
+  /**
+   * Enable range selector
+   */
+  rangeEnabled: false,
 
-    /**
-     * Enable time selection
-     */
-    timepickerEnabled: true,
+  /**
+   * Enable time selection
+   */
+  timepickerEnabled: true,
 
-    /**
-     * Seconds enabled?
-     */
-    secondsEnabled: false,
+  /**
+   * Seconds enabled?
+   */
+  secondsEnabled: false,
 
-    /**
-     * Show AM/PM ?
-     */
-    meridiemEnabled: true,
+  /**
+   * Show AM/PM ?
+   */
+  meridiemEnabled: true,
 
-    /**
-     * Increment/decrement hour options by...
-     */
-    hourStep: 1,
+  /**
+   * Increment/decrement hour options by...
+   */
+  hourStep: 1,
 
-    /**
-     * Increment/decrement minute options by...
-     */
-    minuteStep: 15,
+  /**
+   * Increment/decrement minute options by...
+   */
+  minuteStep: 15,
 
-    /**
-     * Increment/decrement second options by...
-     */
-    secondStep: 15,
+  /**
+   * Increment/decrement second options by...
+   */
+  secondStep: 15,
 
-    /**
-     * Timepicker hour format
-     */
-    hourFormat: 'h',
+  /**
+   * Timepicker hour format
+   */
+  hourFormat: 'h',
 
-    /**
-     * Timepicker minute format
-     */
-    minuteFormat: 'mm',
+  /**
+   * Timepicker minute format
+   */
+  minuteFormat: 'mm',
 
-    /**
-     * Timepicker second format
-     */
-    secondFormat: 'ss',
+  /**
+   * Timepicker second format
+   */
+  secondFormat: 'ss',
 
-    /**
-     * Timepicker meridiem format
-     */
-    meridiemFormat: 'A',
+  /**
+   * Timepicker meridiem format
+   */
+  meridiemFormat: 'A',
 
-    /**
-     * Modal heading
-     */
-    heading: 'Select a Date',
+  /**
+   * Modal heading
+   */
+  heading: 'Select a Date',
 
-    /**
-     * Modal range heading
-     */
-    rangeHeading: 'Select a Start & End Date',
+  /**
+   * Modal range heading
+   */
+  rangeHeading: 'Select a Start & End Date',
 
-    /**
-     * Modal ok button text
-     */
-    okBtnText: 'OK',
+  /**
+   * Modal ok button text
+   */
+  okBtnText: 'OK',
 
-    /**
-     * Modal cancel button text
-     */
-    cancelBtnText: 'Cancel',
+  /**
+   * Modal cancel button text
+   */
+  cancelBtnText: 'Cancel',
 
-  })
-;
+});
 
 angular.module('ez.datetime').controller('EzDatetimeModalController', [
   '$scope',
@@ -344,7 +343,9 @@ angular.module('ez.datetime').directive('ezDatePicker', [
             }
 
             for (var i = 0; i < 6; i += 1) {
-              var week = {dates: []};
+              var week = {
+                dates: []
+              };
               for (var j = 0; j < 7; j += 1) {
                 var dayMoment = moment(startDate).add((i * 7) + j, 'days');
 
@@ -366,7 +367,6 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 
             return result;
           },
-
           setTime: function setTime(date) {
             var v = moment(date).format(scope.options.modelFormat);
 
@@ -389,7 +389,25 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 
           scope.view = viewName;
 
+
           if (!!scope.view && !!scope.view && !dateObject.unselectable && dataFactory[scope.view] && !!dateObject.dateValue) {
+
+            if (viewName === 'setTime') {
+              if (dateObject.dateValue.format() === moment(ngModel.$modelValue).format()) {
+                dateObject.active = false;
+
+                scope.data.weeks.forEach(function(w) {
+                  w.dates.forEach(function(d) {
+                    d.highlight = false;
+                  });
+                });
+
+                ngModel.$setViewValue(null);
+
+                return;
+              }
+            }
+
             scope.data = dataFactory[scope.view](dateObject.dateValue);
           }
         };
@@ -413,9 +431,7 @@ angular.module('ez.datetime').directive('ezDatePicker', [
         if (!!attrs.from) {
           scope.$watch('from', function(newVal, oldVal) {
             if (newVal !== oldVal) {
-              scope.changeView(scope.view, {
-                dateValue: ngModel.$viewValue
-              });
+              ngModel.$render();
             }
           });
         }
@@ -423,9 +439,7 @@ angular.module('ez.datetime').directive('ezDatePicker', [
         if (!!attrs.to) {
           scope.$watch('to', function(newVal, oldVal) {
             if (newVal !== oldVal) {
-              scope.changeView(scope.view, {
-                dateValue: ngModel.$viewValue
-              });
+              ngModel.$render();
             }
           });
         }
@@ -510,19 +524,19 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
             scope.to = scope.form.to;
 
             if (scope.options.rangeEnabled) {
-              switch(scope.options.modelBinding) {
-              case 'default':
-                scope.ngModel = {
-                  from: scope.from,
-                  to: scope.to
-                };
-                break;
-              case 'from':
-                scope.ngModel = scope.from;
-                break;
-              case 'to':
-                scope.ngModel = scope.to;
-                break;
+              switch (scope.options.modelBinding) {
+                case 'default':
+                  scope.ngModel = {
+                    from: scope.from,
+                    to: scope.to
+                  };
+                  break;
+                case 'from':
+                  scope.ngModel = scope.from;
+                  break;
+                case 'to':
+                  scope.ngModel = scope.to;
+                  break;
               }
             } else {
               scope.ngModel = scope.form.date;
@@ -542,7 +556,6 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
     };
   }
 ]);
-
 
 angular.module('ez.datetime').directive('ezTimePicker', [
   'EzDatetimeService',
@@ -593,11 +606,11 @@ angular.module('ez.datetime').directive('ezTimePicker', [
             s = s + scope.options.secondStep;
           }
 
-          ngModel.$render = function() {
-            if (!ngModel.$viewValue) {
-              scope.ngModel = moment().format();
-            }
-          };
+          //ngModel.$render = function() {
+          //if (!ngModel.$viewValue) {
+          //scope.ngModel = moment().format();
+          //}
+          //};
 
         }
 
@@ -648,11 +661,8 @@ angular.module('ez.datetime').directive('ezTimePicker', [
   }
 ]);
 
-
-
 angular.module('ez.datetime').filter('ezDate', [
-  function(
-  ) {
+  function() {
     return function(v, format) {
       if (!v) {
         return;
@@ -666,7 +676,6 @@ angular.module('ez.datetime').filter('ezDate', [
     };
   }
 ]);
-
 
 angular.module('ez.datetime').service('EzDatetimeService', [
   '$parse',
@@ -700,4 +709,3 @@ angular.module('ez.datetime').service('EzDatetimeService', [
     };
   }
 ]);
-
