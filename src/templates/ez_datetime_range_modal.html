@@ -14,7 +14,7 @@
   </div>
   <div class="modal-body">
     <div class="row">
-      <div class="col-lg-6 col-md-6 col-sm-6">
+      <div class="range-from col-lg-6 col-md-6 col-sm-6">
         <div ez-date-picker ng-model="form.from" to="form.to" options="options"></div>
 
         <div ng-if="options.timepickerEnabled && !!form.from">
@@ -24,7 +24,7 @@
         </div>
 
       </div>
-      <div class="col-lg-6 col-md-6 col-sm-6">
+      <div class="range-to col-lg-6 col-md-6 col-sm-6">
         <div ez-date-picker ng-model="form.to" from="form.from" options="options"></div>
 
         <div ng-if="options.timepickerEnabled && !!form.to">
