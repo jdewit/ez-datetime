@@ -36,7 +36,7 @@
 	<h2><a href="#">ez-datetime</a></h2>
 	<hr>
 
-  <div ng-controller="myCtrl" class="col-lg-6 col-md-6">
+  <div ng-controller="myCtrl" class="col-lg-8 col-md-8">
     <h3>Button Control</h3>
 
     <a class="btn btn-default" ez-datetime-control ng-model="form.date1" config="config1" model-format="x">
@@ -50,7 +50,7 @@
     Model value => {{ form.date1 || 'null' }}
 
     <hr>
-    <h3>Input Control - limit range</h3>
+    <h3>Input Control - limit range <small>({{ form.date3From | ezDate:'lll' }} - {{ form.date3To | ezDate:'lll' }})</small></h3>
 
     <form name="_form">
       <div class="input-group">

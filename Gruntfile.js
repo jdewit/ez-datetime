@@ -101,5 +101,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-angular-templates');
   grunt.loadNpmTasks('grunt-jsbeautifier');
 
-  grunt.registerTask('default', ['jshint', 'jsbeautifier', 'ngtemplates', 'concat', 'uglify', 'less', 'cssmin']);
+  grunt.registerTask('default', ['jshint', 'ngtemplates', 'concat', 'uglify', 'less', 'cssmin']);
+  grunt.registerTask('dist', ['jsbeautifier', 'default']);
 };
