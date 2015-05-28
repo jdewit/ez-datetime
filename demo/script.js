@@ -2,22 +2,30 @@ var app = angular.module('myApp', ['ez.datetime', 'ez.modal', 'ez.dropdown']);
 
 app.controller('myCtrl', function($scope) {
   $scope.form = {
-    date1: moment().format(),
-    date3From: moment().subtract(5, 'days').format(),
-    date3To: moment().add(5, 'days').format()
+    date1: moment().format('x'),
+
+    date3Min: moment().subtract(5, 'days').format(),
+    date3Max: moment().add(5, 'days').format(),
+    date5Range: {
+      from: moment().subtract(5, 'days').format(),
+      to: moment().add(5, 'days').format()
+    },
+    time1: moment().format()
   };
 
   $scope.config1 = {
     format: 'MMMM Do YYYY, h:mma',
-    ranges: {
-       'Today': [moment(), moment()],
-       'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-       'Tomorrow': [moment().add(1, 'days'), moment().add(1, 'days')],
-       'This Week': [moment().startOf('week'), moment().endOf('week')],
-       'Last Week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-       'This Month': [moment().startOf('month'), moment().endOf('month')],
-       'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    }
+    ranges: [
+      {
+        name: 'Today',
+        from: moment().startOf('day'),
+        to: moment().endOf('day')
+      }, {
+        name: 'Yesterday',
+        from: moment().subtract(1, 'days').startOf('day'),
+        to: moment().subtract(1, 'days').endOf('day')
+      }
+    ]
   };
 
   $scope.config2 = {
@@ -29,11 +37,16 @@ app.controller('myCtrl', function($scope) {
     console.log(newVal);
   }, true);
 
+  $scope.modelChanged = function() {
+    console.log('ng-change called');
+  };
+
   $scope.clear = function(property) {
     $scope.form[property] = null;
   };
 
   $scope.log = function(text) {
+    console.log($scope);
     console.log(text);
   };
 });

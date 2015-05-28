@@ -6,7 +6,7 @@
 		<title>Ez-Date-Picker</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.css" rel="stylesheet"/>
+		<link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.css" rel="stylesheet"/>
     <link href="https://rawgit.com/jdewit/ez-dropdown/master/dist/ez-dropdown.min.css" rel="stylesheet"/>
 
     <link href="demo/style.css" rel="stylesheet"/>
@@ -39,7 +39,7 @@
   <div ng-controller="myCtrl" class="col-lg-8 col-md-8">
     <h3>Button Control</h3>
 
-    <a class="btn btn-default" ez-datetime-control ng-model="form.date1" config="config1" model-format="x">
+    <a class="btn btn-default" ez-datetime-control ng-model="form.date1" config="config1" model-format="x" ng-change="modelChanged()">
       <i class="glyphicon glyphicon-calendar"></i>
       {{ form.date1 ? (form.date1 | ezDate:'MMMM Do, YYYY [at] h:mma') : 'Pick a Date' }}
     </a>
@@ -50,12 +50,12 @@
     Model value => {{ form.date1 || 'null' }}
 
     <hr>
-    <h3>Input Control - limit range <small>({{ form.date3From | ezDate:'lll' }} - {{ form.date3To | ezDate:'lll' }})</small></h3>
+    <h3>Input Control - limit range <small>({{ form.date3Min | ezDate:'lll' }} - {{ form.date3Max | ezDate:'lll' }})</small></h3>
 
     <form name="_form">
       <div class="input-group">
 
-        <input class="form-control" ez-datetime-control type="text" ng-model="form.date3" from="form.date3From" to="form.date3To" view-format="YYYY-MM-DD h:mma" ng-change="log('date3 changed')"/>
+        <input class="form-control" ez-datetime-control type="text" ng-model="form.date3" min-date="form.date3Min" max-date="form.date3Max" view-format="YYYY-MM-DD h:mma" ng-change="log('date3 changed')"/>
 
         <div class="input-group-addon">
           <a ez-datetime-control ng-model="form.date3" view-format="YYYY-MM-DD h:mma">
@@ -69,20 +69,23 @@
     <h3>Range Selector</h3>
 
     <form name="_form4">
-      <a ez-datetime-control ng-model="form.date4Range" from="form.date4RangeFrom" to="form.date4RangeTo" range-enabled="true"/>
-        {{ (form.date4Range.from | ezDate:'MMM Do, YYYY [at] h:mma')|| 'Start Date' }} - {{ (form.date4Range.to | ezDate:'MMM Do, YYYY [at] h:mma') || 'End Date' }}
+      <a ez-datetime-range-control from="form.date4From" to="form.date4To" on-change="modelChanged()">
+        {{ (form.date4From | ezDate:'MMM Do, YYYY [at] h:mma')|| 'Start Date' }} - {{ (form.date4RangeTo | ezDate:'MMM Do, YYYY [at] h:mma') || 'End Date' }}
       </a>
     </form>
     Form Dirty State => {{ _form4.$dirty }}
     <br>
-    Model value => {{ form.date4Range || 'null' }}
+    {
+      from: {{ form.date4From || 'null' }},<br>
+      to: {{ form.date4To || 'null' }}
+    }
 
     <hr>
 
     <h3>Input Range Selector</h3>
 
     <form name="_form5">
-      <input class="form-control" type="text" ez-datetime-control ng-model="form.date5Range" from="form.date5RangeFrom" to="form.date5RangeTo" ng-change="log('date5Range changed')" range-enabled="true"/>
+      <input class="form-control" type="text" ez-datetime-range-control from="date5Range.from" to="date5Range.to" on-change="log('date5Range changed')" range-enabled="true"/>
     </form>
     Form Dirty State => {{ _form5.$dirty }}
     <br>
@@ -90,28 +93,29 @@
 
     <hr>
 
-    <h3>Input Control Range</h3>
+    <h3>Custom Input Control Range</h3>
     <div class="row">
       <div class="col-lg-5 col-md-5">
-        <input class="form-control" type="text" ez-datetime-control ng-model="form.from2" to="form.to2" placeholder="Select a start date..."/>
+        <input class="form-control" type="text" ez-datetime-control ng-model="form.from2" max-date="form.to2" placeholder="Select a start date..." ng-change="modelChanged()"/>
       </div>
       <div class="col-lg-1 col-md-1" style="text-align: center;">-</div>
       <div class="col-lg-5 col-md-5">
-        <input class="form-control" ez-datetime-control type="text" ng-model="form.to2" from="form.from2" placeholder="Select a due date..."/>
+        <input class="form-control" ez-datetime-control type="text" ng-model="form.to2" min-date="form.from2" placeholder="Select a due date..." ng-change="modelChanged()"/>
       </div>
     </div>
 
     <hr>
     <h3>Standalone Datepicker</h3>
-    <div ez-date-picker ng-model="form.date5" start-view="year" style="border: 1px solid #ccc; border-radius: 5px;"></div>
+    <div ez-date-picker ng-model="form.date5" start-view="year" style="border: 1px solid #ccc; border-radius: 5px;" ng-change="modelChanged()"></div>
     <br>
     Model value => {{ form.date5 || 'null' }}
 
     <hr>
     <h3>Standalone Timepicker</h3>
-    <div ez-time-picker ng-model="form.time1" seconds-enabled="true"></div>
+    <div ez-time-picker ng-model="form.time1" seconds-enabled="true" ng-change="modelChanged()"></div>
     <br>
     Model value => {{ form.time1 || 'null' }}
+
 
   </div>
 </body>

@@ -1,9 +1,6 @@
 <table class="ez-time-picker">
   <tr>
     <td>
-      <i class="glyphicon glyphicon-time"></i>
-    </td>
-    <td>
       <div class="dropdown">
         <a class="btn btn-default dropdown-toggle">
           {{ ngModel | ezDate:options.hourFormat }}
@@ -23,6 +20,7 @@
           <li ng-repeat="minute in data.minutes">
             <a ng-click="setMinute(minute)">{{ minute }}</a>
           </li>
+          <li ng-hide="data.minuteStep == 1"><a ng-click="increaseMinuteStep($event)"><i class="glyphicon glyphicon-option-horizontal"></i></a></li>
         </ul>
       </div>
     </td>
@@ -36,6 +34,7 @@
           <li ng-repeat="second in data.seconds">
             <a ng-click="setSecond(second)">{{ second }}</a>
           </li>
+          <li ng-hide="data.secondStep == 1"><a ng-click="increaseSecondStep($event)"><i class="glyphicon glyphicon-option-horizontal"></i></a></li>
         </ul>
       </div>
     </td>

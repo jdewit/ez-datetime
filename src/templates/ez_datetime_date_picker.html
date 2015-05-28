@@ -17,12 +17,12 @@
     <tbody>
       <tr ng-if="data.currentView !== 'day'">
         <td colspan="7">
-          <span class="{{ data.currentView }}" ng-repeat="dateObject in data.dates" ng-class="{active: dateObject.active, past: dateObject.past, future: dateObject.future, disabled: dateObject.unselectable, highlight: dateObject.highlight, current: dateObject.current}"
+          <span class="{{ data.currentView }}" ng-repeat="dateObject in data.dates" ng-class="{active: dateObject.active, past: dateObject.past, future: dateObject.future, disabled: dateObject.unselectable, highlight: dateObject.highlight, current: dateObject.isToday}"
           ng-click="changeView(data.nextView, dateObject, $event)">{{ dateObject.display }}</span>
         </td>
       </tr>
       <tr ng-if="data.currentView === 'day'" ng-repeat="week in data.weeks">
-        <td ng-repeat="dateObject in week.dates" ng-click="changeView(data.nextView, dateObject, $event)" class="day" ng-class="{active: dateObject.active, past: dateObject.past, future: dateObject.future, disabled: dateObject.unselectable, highlight: dateObject.highlight, current: dateObject.current}">{{ dateObject.display }}</td>
+        <td ng-repeat="dateObject in week.dates" ng-click="changeView(data.nextView, dateObject, $event)" class="day" ng-class="{active: dateObject.active, past: dateObject.past, future: dateObject.future, disabled: dateObject.unselectable, highlight: dateObject.highlight, current: dateObject.isToday}" title="{{ dateObject.unselectable ? 'This date is out of range' : '' }}">{{ dateObject.display }}</td>
       </tr>
     </tbody>
   </table>

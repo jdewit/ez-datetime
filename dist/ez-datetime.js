@@ -27,18 +27,6 @@ angular.module('ez.datetime')
   viewFormat: 'MMM Do YYYY [at] h:mma',
 
   /**
-   * The date to bind ng-model with
-   *
-   * options: ["default", "from", "to"]
-   */
-  modelBinding: 'default',
-
-  /**
-   * Enable range selector
-   */
-  rangeEnabled: false,
-
-  /**
    * Enable time selection
    */
   timepickerEnabled: true,
@@ -52,21 +40,6 @@ angular.module('ez.datetime')
    * Show AM/PM ?
    */
   meridiemEnabled: true,
-
-  /**
-   * Increment/decrement hour options by...
-   */
-  hourStep: 1,
-
-  /**
-   * Increment/decrement minute options by...
-   */
-  minuteStep: 15,
-
-  /**
-   * Increment/decrement second options by...
-   */
-  secondStep: 15,
 
   /**
    * Timepicker hour format
@@ -89,30 +62,107 @@ angular.module('ez.datetime')
   meridiemFormat: 'A',
 
   /**
-   * Modal heading
+   * Modal heading text
    */
-  heading: 'Select a Date',
+  headingText: 'Select a Date',
 
   /**
-   * Modal range heading
+   * Range heading text
    */
-  rangeHeading: 'Select a Start & End Date',
+  rangeHeadingText: 'Select a Start & End Date',
 
   /**
-   * Modal ok button text
+   * Ok Button text
    */
-  okBtnText: 'OK',
+  okBtnText: 'Ok',
 
   /**
-   * Modal cancel button text
+   * Cancel Button text
    */
   cancelBtnText: 'Cancel',
 
   /**
-   * Text to show in modal heading if date has not yet been selected
+   * Shortcut Button text
    */
-  nullText: 'No date selected'
+  shortcutBtnText: 'Shortcuts',
 
+  /**
+   * no date value text
+   */
+  noValueText: 'No date selected',
+
+  /**
+   * Ok btn icon class
+   */
+  okBtnIcon: 'glyphicon glyphicon-ok',
+
+  /**
+   * Cancel btn icon class
+   */
+  cancelBtnIcon: 'glyphicon glyphicon-remove',
+
+  /**
+   * Shortcut btn icon class
+   */
+  shortcutBtnIcon: 'glyphicon glyphicon-flash',
+
+  /**
+   * Clear btn icon class
+   */
+  clearBtnIcon: 'glyphicon glyphicon-trash',
+
+  /**
+   * Heading btn icon class
+   */
+  headingIcon: 'glyphicon glyphicon-calendar',
+
+  /**
+   * Show shortcut selector
+   */
+  shortcutsEnabled: true,
+
+  /**
+   * Shortcut range options
+   */
+  shortcuts: [
+    {
+      name: 'Today',
+      from: moment().startOf('day'),
+      to: moment().endOf('day')
+    }, {
+      name: 'Tomorrow',
+      from: moment().add(1, 'days').startOf('day'),
+      to: moment().add(1, 'days').endOf('day')
+    }, {
+      name: 'Yesterday',
+      from: moment().subtract(1, 'days').startOf('day'),
+      to: moment().subtract(1, 'days').endOf('day')
+    }, {
+      name: 'This Week',
+      from: moment().startOf('week'),
+      to: moment().endOf('week')
+    }, {
+      name: 'Next Week',
+      from: moment().add(1, 'week').startOf('week'),
+      to: moment().add(1, 'week').endOf('week')
+    }, {
+      name: 'Last Week',
+      from: moment().subtract(1, 'week').startOf('week'),
+      to: moment().subtract(1, 'week').endOf('week')
+    }, {
+      name: 'This Month',
+      from: moment().startOf('month'),
+      to: moment().endOf('month')
+    }, {
+      name: 'Next Month',
+      from: moment().add(1, 'month').startOf('month'),
+      to: moment().add(1, 'month').endOf('month')
+    }, {
+      name: 'Last Month',
+      from: moment().subtract(1, 'month').startOf('month'),
+      to: moment().subtract(1, 'month').endOf('month')
+    }
+  ]
 });
 
 angular.module('ez.datetime').controller('EzDatetimeModalController', [
@@ -122,6 +172,37 @@ angular.module('ez.datetime').controller('EzDatetimeModalController', [
     $scope,
     $modalInstance
   ) {
+    var min, max;
+
+    $scope.shortcuts = [];
+
+    // add quick shortcuts that fall between min & max
+    $scope.options.shortcuts.forEach(function(shortcut) {
+      if (!!$scope.form.min) {
+        min = moment($scope.form.minDate);
+
+        if (shortcut.from < min || shortcut.to < min) {
+          return;
+        }
+      }
+
+      if (!!$scope.form.max) {
+        max = moment($scope.form.maxDate);
+
+        if (shortcut.from > max || shortcut.to > max) {
+          return;
+        }
+      }
+
+      $scope.shortcuts.push(shortcut);
+    });
+
+    $scope.select = function(index) {
+      var shortcut = $scope.$parent.options.shortcuts[index];
+
+      $scope.form.from = shortcut.from.format();
+      $scope.form.to = shortcut.to.format();
+    };
 
     $scope.dismiss = function() {
       $modalInstance.dismiss();
@@ -144,6 +225,8 @@ angular.module('ez.datetime').directive('ezDatePicker', [
       require: 'ngModel',
       templateUrl: 'ez_datetime_date_picker.html',
       scope: {
+        minDate: '=?',
+        maxDate: '=?',
         from: '=?',
         to: '=?',
         options: '=?'
@@ -155,187 +238,224 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 
         DatetimeService.resolveConfig(scope, attrs);
 
-        var startOfDecade = function startOfDecade(unixDate) {
+        var startOfDecade = function(unixDate) {
           var startYear = (parseInt(moment(unixDate).year() / 10, 10) * 10);
+
           return moment(unixDate).year(startYear).startOf('year');
         };
 
+        var fixDate = function(d) {
+          if (!d) {
+            return;
+          }
+
+          if (!moment.isMoment(d)) {
+            if (scope.options.modelFormat === 'x') {
+              d = parseInt(d, 10);
+            }
+
+            d = moment(d);
+          }
+
+          return d;
+        };
 
         // highlight items that are within the selected range
-        var resolveHighlight = function(date, activeDateUnix, dateValue) {
-          console.log('resol', moment(activeDateUnix).format('lll'));
-          var dateUnix = moment(date).unix();
-          var fromUnix, toUnix;
+        var setStates = function(date, activeDateUnix, dateValue) {
+          var dateUnix = date.unix();
 
-          if (scope.options.rangeEnabled) {
-            // highlight the range of days that are between the from date and the active date
-            if (!!attrs.from && !!scope.from) {
-              fromUnix = moment(scope.from).unix();
+          dateValue.highlight = false;
+          dateValue.unselectable = false;
 
-              if (!!ngModel.$viewValue && !!activeDateUnix && dateUnix >= fromUnix && dateUnix < activeDateUnix) {
-                dateValue.highlight = true;
-              }
+          var view = scope.view === 'setValue' ? scope.options.minView : scope.view;
 
-              if (dateUnix < fromUnix) {
-                dateValue.unselectable = true;
-              }
-            } else if (!!attrs.to && !!scope.to) {
-              // highlight the range of days that are between the active date and the to date
+          var minDate = scope.minDate || scope.from;
+          if (!!minDate) {
+            var minUnix = fixDate(minDate).startOf(view).unix();
 
-              toUnix = moment(scope.to).unix();
-
-              if (!!ngModel.$viewValue && !!activeDateUnix && dateUnix <= toUnix && dateUnix > activeDateUnix) {
-                dateValue.highlight = true;
-              }
-
-              if (dateUnix > toUnix) {
-                dateValue.unselectable = true;
-              }
+            if (dateUnix < minUnix) {
+              dateValue.unselectable = true;
             }
-          } else {
-            if (!!scope.from) {
-              fromUnix = moment(scope.from).unix();
+          }
 
-              if (dateUnix < fromUnix) {
-                dateValue.unselectable = true;
+          var maxDate = scope.maxDate || scope.to;
+          if (maxDate) {
+            var maxUnix = fixDate(maxDate).endOf(view).unix();
+
+            if (dateUnix > maxUnix) {
+              dateValue.unselectable = true;
+            }
+          }
+
+          if (!activeDateUnix) {
+            return;
+          }
+
+          if (!dateValue.unselectable && !dateValue.active) {
+            if (!!scope.from) {
+              var from = fixDate(scope.from).startOf(view).unix();
+
+              if (dateUnix >= from && dateUnix < activeDateUnix) {
+                dateValue.highlight = true;
               }
             }
 
             if (!!scope.to) {
-              toUnix = moment(scope.to).unix();
+              var to = fixDate(scope.to).endOf(view).unix();
 
-              if (dateUnix > toUnix) {
-                dateValue.unselectable = true;
+              if (dateUnix <= to && dateUnix > activeDateUnix) {
+                dateValue.highlight = true;
               }
             }
           }
+
+        };
+
+        var matchTime = function(d1, d2) {
+          if (!d1) {
+            return;
+          }
+
+          if (!d2) {
+            d2 = moment();
+          }
+
+          d1.hours(d2.hours());
+          d1.minutes(d2.minutes());
+          d1.seconds(d2.seconds());
+
+          return d1;
         };
 
         var dataFactory = {
-          year: function year(date) {
-            var today = moment().format('YYYY');
-            var selectedDate = moment(date).startOf('year');
+          year: function(newDate, activeDate) {
+            var todayDash = moment().format('YYYY');
+
             // View starts one year before the decade starts and ends one year after the decade ends
             // i.e. passing in a date of 1/1/2013 will give a range of 2009 to 2020
             // Truncate the last digit from the current year and subtract 1 to get the start of the decade
-            var startDecade = (parseInt(selectedDate.year() / 10, 10) * 10);
-            var startDate = moment(startOfDecade(date)).subtract(1, 'year').startOf('year');
+            var startDecade = (parseInt(moment(newDate).startOf('year').year() / 10, 10) * 10);
+            var startDateMoment = moment(startOfDecade(newDate)).subtract(1, 'year').startOf('year');
 
-            var activeYear = moment(ngModel.$viewValue).year();
-            var activeDateUnix = moment(ngModel.$viewValue).unix();
+            var activeYear;
+            var activeDateUnix;
+            if (!!activeDate) {
+              activeYear = moment(activeDate).year();
+              activeDateUnix = moment(activeDate).unix();
+            }
 
             var result = {
               'currentView': 'year',
-              'nextView': scope.options.minView === 'year' ? 'setTime' : 'month',
+              'nextView': scope.options.minView === 'year' ? 'setValue' : 'month',
               'previousViewDate': {
                 unselectable: true,
                 dateValue: null,
                 display: startDecade + '-' + (startDecade + 9)
               },
               'leftDate': {
-                dateValue: moment(startDate).subtract(9, 'year').valueOf()
+                dateValue: moment(startDateMoment).subtract(9, 'year').unix()
               },
               'rightDate': {
-                dateValue: moment(startDate).add(11, 'year').valueOf()
+                dateValue: moment(startDateMoment).add(11, 'year').unix()
               },
               'dates': []
             };
 
             for (var i = 0; i < 12; i += 1) {
-              var yearMoment = moment(startDate).add(i, 'years');
+              var yearMoment = moment(startDateMoment).add(i, 'years');
               var dateValue = {
                 'dateValue': yearMoment,
                 'display': yearMoment.format('YYYY'),
                 'past': yearMoment.year() < startDecade,
                 'future': yearMoment.year() > startDecade + 9,
-                'active': !!ngModel.$viewValue && yearMoment.year() === activeYear,
-                'current': yearMoment.format('YYYY') === today
+                'active': !!ngModel.$modelValue && yearMoment.year() === activeYear,
+                'isToday': yearMoment.format('YYYY') === todayDash
               };
 
-              resolveHighlight(yearMoment, activeDateUnix, dateValue);
+              setStates(yearMoment, activeDateUnix, dateValue);
 
               result.dates.push(dateValue);
             }
 
             return result;
           },
-          month: function month(date) {
-            var today = moment().format('YYYY-MMM');
-            var startDate = moment(date).startOf('year');
-            var previousViewDate = startOfDecade(date);
+          month: function(newDate, activeDate) {
+            var todayDash = moment().format('YYYY-MM');
+            var startDateMoment = moment(newDate).startOf('year');
 
-            var activeDate = moment(ngModel.$viewValue).format('YYYY-MMM');
-            var activeDateUnix = moment(ngModel.$viewValue).unix();
+            var activeMonthDash;
+            var activeMonthUnix;
+
+            if (!!activeDate) {
+              activeMonthDash = moment(activeDate).format('YYYY-MM');
+              activeMonthUnix = moment(activeDate).unix();
+            }
 
             var result = {
               'previousView': 'year',
               'currentView': 'month',
-              'nextView': scope.options.minView === 'month' ? 'setTime' : 'day',
+              'nextView': scope.options.minView === 'month' ? 'setValue' : 'day',
               'previousViewDate': {
-                dateValue: previousViewDate.valueOf(),
-                display: startDate.format('YYYY')
+                dateValue: activeDate || moment(),
+                display: startDateMoment.format('YYYY')
               },
               'leftDate': {
-                dateValue: moment(startDate).subtract(1, 'year').valueOf()
+                dateValue: moment(startDateMoment).subtract(1, 'year').unix()
               },
               'rightDate': {
-                dateValue: moment(startDate).add(1, 'year').valueOf()
+                dateValue: moment(startDateMoment).add(1, 'year').unix()
               },
               'dates': []
             };
 
             for (var i = 0; i < 12; i += 1) {
-              var monthMoment = moment(startDate).add(i, 'months');
+              var monthMoment = moment(startDateMoment).add(i, 'months');
+              var monthDash = moment(monthMoment).format('YYYY-MM');
+
               var dateValue = {
                 'dateValue': monthMoment,
                 'display': monthMoment.format('MMM'),
-                'active': !!ngModel.$viewValue && monthMoment.format('YYYY-MMM') === activeDate,
-                'current': monthMoment.format('YYYY-MMM') === today
+                'active':  !!ngModel.$modelValue && monthDash === activeMonthDash,
+                'isToday': monthDash === todayDash
               };
 
-              resolveHighlight(monthMoment, activeDateUnix, dateValue);
+              setStates(monthMoment, activeMonthUnix, dateValue);
 
               result.dates.push(dateValue);
             }
 
             return result;
           },
-          day: function day(date) {
-            var selectedDate = date;
-            var today = moment().format('YYYY-MMM-DD');
+          day: function(newDate, activeDate) {
+            var todayDash = moment().format('YYYY-MM-DD');
+            var monthStartMoment = moment(newDate).startOf('month');
+            var monthEndMoment = moment(newDate).endOf('month');
 
-            var startOfMonth = moment(selectedDate).startOf('month');
+            var activeDateDash;
+            var activeDateUnix;
 
-            if (scope.options.timepickerEnabled) {
-              var currentDate = moment(ngModel.$viewValue);
-
-              // make time match current time
-              startOfMonth.hours(currentDate.hours());
-              startOfMonth.minutes(currentDate.minutes());
-              startOfMonth.seconds(currentDate.seconds());
+            if (!!activeDate) {
+              activeDateDash = moment(activeDate).format('YYYY-MM-DD');
+              activeDateUnix = moment(activeDate).unix();
             }
 
-            var previousViewDate = moment(selectedDate).startOf('year');
-            var endOfMonth = moment(selectedDate).endOf('month');
+            monthStartMoment = matchTime(monthStartMoment, activeDate);
 
-            var startDate = moment(startOfMonth).subtract(Math.abs(startOfMonth.weekday()), 'days');
-
-            var activeDate = moment(ngModel.$viewValue).format('YYYY-MMM-DD');
-            var activeDateUnix = moment(ngModel.$viewValue).unix();
+            var startDateMoment = moment(monthStartMoment).subtract(Math.abs(monthStartMoment.weekday()), 'days');
 
             var result = {
               'previousView': 'month',
               'currentView': 'day',
-              'nextView': 'setTime',
+              'nextView': 'setValue',
               'previousViewDate': {
-                dateValue: previousViewDate.valueOf(),
-                display: startOfMonth.format('YYYY-MMM')
+                dateValue: activeDate || moment(),
+                display: monthStartMoment.format('YYYY-MMM')
               },
               'leftDate': {
-                dateValue: moment(startOfMonth).subtract(1, 'months').valueOf()
+                dateValue: moment(monthStartMoment).subtract(1, 'months')
               },
               'rightDate': {
-                dateValue: moment(startOfMonth).add(1, 'months').valueOf()
+                dateValue: moment(monthStartMoment).add(1, 'months')
               },
               'dayNames': [],
               'weeks': []
@@ -349,19 +469,21 @@ angular.module('ez.datetime').directive('ezDatePicker', [
               var week = {
                 dates: []
               };
+
               for (var j = 0; j < 7; j += 1) {
-                var dayMoment = moment(startDate).add((i * 7) + j, 'days');
+                var dayMoment = moment(startDateMoment).add((i * 7) + j, 'days');
+                var dayDash = moment(dayMoment).format('YYYY-MM-DD');
 
                 var dateValue = {
                   'dateValue': dayMoment,
-                  'display': dayMoment.format('D'),
-                  'active': !!ngModel.$viewValue && dayMoment.format('YYYY-MMM-DD') === activeDate,
-                  'current': !ngModel.$viewValue && dayMoment.format('YYYY-MMM-DD') === today,
-                  'past': dayMoment.isBefore(startOfMonth),
-                  'future': dayMoment.isAfter(endOfMonth)
+                  'display': moment(dayMoment).format('D'),
+                  'active': !!activeDate && dayDash === activeDateDash,
+                  'isToday': dayDash === todayDash,
+                  'past': dayMoment.isBefore(monthStartMoment),
+                  'future': dayMoment.isAfter(monthEndMoment)
                 };
 
-                resolveHighlight(dayMoment, activeDateUnix, dateValue);
+                setStates(dayMoment, activeDateUnix, dateValue);
 
                 week.dates.push(dateValue);
               }
@@ -370,20 +492,24 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 
             return result;
           },
-          setTime: function setTime(date) {
-            var v = moment(date).format(scope.options.modelFormat);
+          setValue: function(date) {
+            var v;
 
-            if (scope.options.modelFormat === 'x' || scope.options.modelFormat === 'X') {
-              v = parseInt(v, 10);
+            if (!!date) {
+              if (!moment.isMoment(date)) {
+                date = fixDate(date);
+              }
+
+              v = date.format(scope.options.modelFormat);
             }
 
             ngModel.$setViewValue(v);
 
-            return dataFactory[scope.options.minView](moment(date));
+            return dataFactory[scope.options.minView](date, date);
           }
         };
 
-        scope.changeView = function changeView(viewName, dateObject, event) {
+        scope.changeView = function(viewName, dateObject, event) {
           if (event) {
             event.stopPropagation();
             event.preventDefault();
@@ -391,67 +517,65 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 
           scope.view = viewName;
 
-
           if (!!scope.view && !!scope.view && !dateObject.unselectable && dataFactory[scope.view] && !!dateObject.dateValue) {
 
-            if (viewName === 'setTime') {
-              if (dateObject.dateValue.format() === moment(ngModel.$modelValue).format()) {
-                dateObject.active = false;
+            var activeDate = fixDate(ngModel.$modelValue);
 
-                scope.data.weeks.forEach(function(w) {
-                  w.dates.forEach(function(d) {
-                    d.highlight = false;
-                  });
-                });
+            if (viewName === 'setValue') {
 
-                ngModel.$setViewValue(null);
+              if (!!activeDate && dateObject.dateValue.unix() === activeDate.unix()) {
+                ngModel.$setViewValue(undefined);
+                ngModel.$render();
 
                 return;
               }
             }
 
-            scope.data = dataFactory[scope.view](dateObject.dateValue);
+            scope.data = dataFactory[scope.view](dateObject.dateValue, activeDate);
           }
         };
 
-        ngModel.$render = function $render() {
+        ngModel.$render = function() {
           if (!scope.view) {
             scope.view = scope.options.startView;
           }
+          var d = fixDate(ngModel.$modelValue);
 
-          //var v = ngModel.$viewValue;
-
-          //if (typeof v === 'string' && !isNaN(v)) {
-          //v = parseInt(v, 10);
-
-          //ngModel.$setViewValue(v);
-          //}
-          //}
-
-          scope.data = dataFactory[scope.view](ngModel.$viewValue);
+          scope.data = dataFactory[scope.view](d, d);
         };
 
-        if (!!attrs.from) {
-          scope.$watch('from', function(newVal, oldVal) {
-            if (newVal !== oldVal) {
+        if (!!attrs.minDate) {
+          scope.$watch('minDate', function(n, o) {
+            if (n !== o) {
+              ngModel.$render();
+            }
+          });
+        }
 
-              console.log('from changed', newVal);
+        if (!!attrs.maxDate) {
+          scope.$watch('maxDate', function(n, o) {
+            if (n !== o) {
+              ngModel.$render();
+            }
+          });
+        }
+
+        if (!!attrs.from) {
+          scope.$watch('from', function(n, o) {
+            if (n !== o) {
               ngModel.$render();
             }
           });
         }
 
         if (!!attrs.to) {
-          scope.$watch('to', function(newVal, oldVal) {
-            if (newVal !== oldVal) {
+          scope.$watch('to', function(n, o) {
+            if (n !== o) {
               ngModel.$render();
-              console.log('to changed', newVal);
-              //scope.changeView(scope.view, {
-              //dateValue: moment(ngModel.$modelValue)
-              //});
             }
           });
         }
+
 
       }
     };
@@ -459,6 +583,72 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 ]);
 
 angular.module('ez.datetime').directive('ezDatetimeControl', [
+  'EzDatetimeService',
+  '$modal',
+  function(
+    DatetimeService,
+    $modal
+  ) {
+    return {
+      restrict: 'EA',
+      require: 'ngModel',
+      scope: {
+        ngModel: '=',
+        minDate: '=?',
+        maxDate: '=?',
+        from: '=?',
+        to: '=?',
+        config: '=?'
+      },
+      link: function(scope, $element, attrs, modelCtrl) {
+        $element.addClass('ez-datetime-control');
+
+        DatetimeService.resolveConfig(scope, attrs);
+
+        modelCtrl.$formatters.push(function(v) {
+          if (!v) {
+            return;
+          }
+
+          if (scope.options.modelFormat === 'x') {
+            v = parseInt(v, 10);
+          }
+
+          return moment(v).format(scope.options.viewFormat);
+        });
+
+        scope.clear = function() {
+          scope.form.value = undefined;
+        };
+
+        $element.bind('click', function() {
+          if (attrs.disabled) {
+            return;
+          }
+
+          scope.form = {
+            value: modelCtrl.$modelValue,
+            minDate: scope.minDate,
+            maxDate: scope.maxDate,
+            from: scope.from,
+            to: scope.to
+          };
+
+          $modal.open({
+            templateUrl: 'ez_datetime_modal.html',
+            controller: 'EzDatetimeModalController',
+            scope: scope,
+          }).result.then(function() {
+            scope.ngModel = scope.form.value;
+          });
+        });
+
+      }
+    };
+  }
+]);
+
+angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
   'EzDatetimeService',
   '$parse',
   '$timeout',
@@ -471,93 +661,99 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
   ) {
     return {
       restrict: 'EA',
-      require: 'ngModel',
       scope: {
-        ngModel: '=',
-        from: '=?',
-        to: '=?',
+        from: '=',
+        to: '=',
+        minDate: '=?',
+        maxDate: '=?',
         config: '=?'
       },
-      link: function(scope, $element, attrs, ngModel) {
-        scope.form = {};
+      link: function(scope, $element, attrs) {
+        var text;
+        var setDirty = angular.noop;
 
         $element.addClass('ez-datetime-control');
 
         DatetimeService.resolveConfig(scope, attrs);
 
-        ngModel.$formatters.push(function(v) {
-          if (v) {
-            if (typeof v === 'string' && !isNaN(v)) {
-              v = parseInt(v, 10);
-            }
+        // implement input formatter
+        if ($element.is('input')) {
+          var from, to;
 
-            if (scope.options.rangeEnabled && scope.options.modelBinding === 'default') {
-              v = moment(v.from).format(scope.options.viewFormat) + ' - ' + moment(v.to).format(scope.options.viewFormat);
+          var setInput = function() {
+            if (scope.options.modelFormat === 'x') {
+              from = parseInt(scope.from, 10);
+              to = parseInt(scope.to, 10);
             } else {
-              v = moment(v).format(scope.options.viewFormat);
+              from = scope.from;
+              to = scope.to;
             }
-          }
 
-          return v;
-        });
+            if (!!from) {
+              text = moment(from).format(scope.options.viewFormat);
+            } else {
+              text = scope.options.noValueText;
+            }
+
+            text += ' - ';
+
+            if (!!to) {
+              text += moment(to).format(scope.options.viewFormat);
+            } else {
+              text += scope.options.noValueText;
+            }
+
+            $element.val(text);
+          };
+
+          setDirty = function() {
+            setInput();
+
+            var parentForm = $element.inheritedData('$formController');
+
+            parentForm.$setDirty();
+          };
+
+          // init
+          setInput();
+        }
+
+        scope.clear = function() {
+          scope.form.from = undefined; 
+          scope.form.to = undefined; 
+        };
 
         $element.bind('click', function() {
-
-          scope.form.date = ngModel.$modelValue;
-
-          // try to init from ngModel value first
-          if (!!scope.form.date) {
-            if (!!scope.form.date.from) {
-              scope.form.from = scope.form.date.from;
-            }
-
-            if (!!scope.form.date.to) {
-              scope.form.to = scope.form.date.to;
-            }
+          if (attrs.disabled) {
+            return;
           }
 
-          // try to init from from/to scope attributes
-          //
-          scope.form.from = scope.from;
-          scope.form.to = scope.to;
-
-          scope.form.isFrom = !!attrs.to && !!scope.form.to;
-          scope.form.isTo = !!attrs.from && !!scope.form.from;
+          scope.form = {
+            min: scope.minDate,
+            max: scope.maxDate,
+            from: scope.from,
+            to: scope.to
+          };
 
           $modal.open({
-            templateUrl: scope.options.rangeEnabled ? 'ez_datetime_range_modal.html' : 'ez_datetime_modal.html',
+            templateUrl:'ez_datetime_range_modal.html',
             controller: 'EzDatetimeModalController',
             scope: scope,
           }).result.then(function() {
+            if (scope.form === scope.form.from && scope.to === scope.form.to) {
+              return;
+            }
+
             scope.from = scope.form.from;
             scope.to = scope.form.to;
 
-            if (scope.options.rangeEnabled) {
-              switch (scope.options.modelBinding) {
-                case 'default':
-                  scope.ngModel = {
-                    from: scope.from,
-                    to: scope.to
-                  };
-                  break;
-                case 'from':
-                  scope.ngModel = scope.from;
-                  break;
-                case 'to':
-                  scope.ngModel = scope.to;
-                  break;
-              }
-            } else {
-              scope.ngModel = scope.form.date;
-            }
+            setDirty();
 
-            if (!!attrs.ngChange) {
+            if (!!attrs.onChange) {
               $timeout(function() {
-                $parse(attrs.ngChange)(scope.$parent);
+                $parse(attrs.onChange)(scope.$parent);
               });
             }
-
-            ngModel.$setDirty();
           });
         });
 
@@ -585,42 +781,46 @@ angular.module('ez.datetime').directive('ezTimePicker', [
 
         function init() {
           scope.data = {
+            minuteStep: 15,
+            secondStep: 15,
             hours: [],
             minutes: [],
             seconds: []
           };
 
-          // set hour options
-          var h = scope.options.meridiemEnabled ? 1 : 0;
-          var limitH = scope.options.meridiemEnabled ? 12 : 23;
-          while (h <= limitH) {
-            scope.data.hours.push(h);
+          setOptions();
+        }
 
-            h = h + scope.options.hourStep;
+        function setOptions() {
+          scope.data.minutes = [];
+          scope.data.seconds = [];
+
+          if (!scope.data.hours.length) {
+            // set hour options
+            var h = scope.options.meridiemEnabled ? 1 : 0;
+            var limitH = scope.options.meridiemEnabled ? 12 : 23;
+            while (h <= limitH) {
+              scope.data.hours.push(h);
+
+              h = h + 1;
+            }
           }
 
           // set minute options
           var m = 0;
-          while (m <= 60) {
+          while (m < 60) {
             scope.data.minutes.push(m);
 
-            m = m + scope.options.minuteStep;
+            m = m + scope.data.minuteStep;
           }
 
           // set second options
           var s = 0;
-          while (s <= 60) {
+          while (s < 60) {
             scope.data.seconds.push(s);
 
-            s = s + scope.options.secondStep;
+            s = s + scope.data.secondStep;
           }
-
-          //ngModel.$render = function() {
-          //if (!ngModel.$viewValue) {
-          //scope.ngModel = moment().format();
-          //}
-          //};
-
         }
 
         function update(date) {
@@ -628,8 +828,24 @@ angular.module('ez.datetime').directive('ezTimePicker', [
           ngModel.$render();
         }
 
+        function getDate() {
+          if (!scope.ngModel) {
+            return;
+          }
+
+          if (scope.options.modelFormat === 'x') {
+            return moment(parseInt(scope.ngModel, 10));
+          } else {
+            return moment(scope.ngModel);
+          }
+        }
+
         scope.setHour = function(v) {
-          var date = moment(scope.ngModel);
+          var date = getDate();
+
+          if (!date) {
+            return;
+          }
 
           date.hours(v);
 
@@ -637,7 +853,11 @@ angular.module('ez.datetime').directive('ezTimePicker', [
         };
 
         scope.setMinute = function(v) {
-          var date = moment(scope.ngModel);
+          var date = getDate();
+
+          if (!date) {
+            return;
+          }
 
           date.minutes(v);
 
@@ -645,7 +865,11 @@ angular.module('ez.datetime').directive('ezTimePicker', [
         };
 
         scope.setSecond = function(v) {
-          var date = moment(scope.ngModel);
+          var date = getDate();
+
+          if (!date) {
+            return;
+          }
 
           date.seconds(v);
 
@@ -653,7 +877,11 @@ angular.module('ez.datetime').directive('ezTimePicker', [
         };
 
         scope.toggleMeridiem = function() {
-          var date = moment(scope.ngModel);
+          var date = getDate();
+
+          if (!date) {
+            return;
+          }
 
           if (date.hours() > 12) {
             date.hours(date.hours() - 12);
@@ -662,6 +890,38 @@ angular.module('ez.datetime').directive('ezTimePicker', [
           }
 
           update(date);
+        };
+
+        scope.increaseMinuteStep = function($event) {
+          $event.preventDefault();
+          $event.stopPropagation();
+
+          switch(scope.data.minuteStep) {
+            case 15:
+              scope.data.minuteStep = 5;
+            break;
+            case 5:
+              scope.data.minuteStep = 1;
+            break;
+          }
+
+          setOptions();
+        };
+
+        scope.increaseSecondStep = function($event) {
+          $event.preventDefault();
+          $event.stopPropagation();
+
+          switch(scope.data.secondStep) {
+            case 15:
+              scope.data.secondStep = 5;
+            break;
+            case 5:
+              scope.data.secondStep = 1;
+            break;
+          }
+
+          setOptions();
         };
 
         init();

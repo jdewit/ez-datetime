@@ -25,18 +25,6 @@ angular.module('ez.datetime')
   viewFormat: 'MMM Do YYYY [at] h:mma',
 
   /**
-   * The date to bind ng-model with
-   *
-   * options: ["default", "from", "to"]
-   */
-  modelBinding: 'default',
-
-  /**
-   * Enable range selector
-   */
-  rangeEnabled: false,
-
-  /**
    * Enable time selection
    */
   timepickerEnabled: true,
@@ -50,21 +38,6 @@ angular.module('ez.datetime')
    * Show AM/PM ?
    */
   meridiemEnabled: true,
-
-  /**
-   * Increment/decrement hour options by...
-   */
-  hourStep: 1,
-
-  /**
-   * Increment/decrement minute options by...
-   */
-  minuteStep: 15,
-
-  /**
-   * Increment/decrement second options by...
-   */
-  secondStep: 15,
 
   /**
    * Timepicker hour format
@@ -87,28 +60,105 @@ angular.module('ez.datetime')
   meridiemFormat: 'A',
 
   /**
-   * Modal heading
+   * Modal heading text
    */
-  heading: 'Select a Date',
+  headingText: 'Select a Date',
 
   /**
-   * Modal range heading
+   * Range heading text
    */
-  rangeHeading: 'Select a Start & End Date',
+  rangeHeadingText: 'Select a Start & End Date',
 
   /**
-   * Modal ok button text
+   * Ok Button text
    */
-  okBtnText: 'OK',
+  okBtnText: 'Ok',
 
   /**
-   * Modal cancel button text
+   * Cancel Button text
    */
   cancelBtnText: 'Cancel',
 
   /**
-   * Text to show in modal heading if date has not yet been selected
+   * Shortcut Button text
    */
-  nullText: 'No date selected'
+  shortcutBtnText: 'Shortcuts',
 
+  /**
+   * no date value text
+   */
+  noValueText: 'No date selected',
+
+  /**
+   * Ok btn icon class
+   */
+  okBtnIcon: 'glyphicon glyphicon-ok',
+
+  /**
+   * Cancel btn icon class
+   */
+  cancelBtnIcon: 'glyphicon glyphicon-remove',
+
+  /**
+   * Shortcut btn icon class
+   */
+  shortcutBtnIcon: 'glyphicon glyphicon-flash',
+
+  /**
+   * Clear btn icon class
+   */
+  clearBtnIcon: 'glyphicon glyphicon-trash',
+
+  /**
+   * Heading btn icon class
+   */
+  headingIcon: 'glyphicon glyphicon-calendar',
+
+  /**
+   * Show shortcut selector
+   */
+  shortcutsEnabled: true,
+
+  /**
+   * Shortcut range options
+   */
+  shortcuts: [
+    {
+      name: 'Today',
+      from: moment().startOf('day'),
+      to: moment().endOf('day')
+    }, {
+      name: 'Tomorrow',
+      from: moment().add(1, 'days').startOf('day'),
+      to: moment().add(1, 'days').endOf('day')
+    }, {
+      name: 'Yesterday',
+      from: moment().subtract(1, 'days').startOf('day'),
+      to: moment().subtract(1, 'days').endOf('day')
+    }, {
+      name: 'This Week',
+      from: moment().startOf('week'),
+      to: moment().endOf('week')
+    }, {
+      name: 'Next Week',
+      from: moment().add(1, 'week').startOf('week'),
+      to: moment().add(1, 'week').endOf('week')
+    }, {
+      name: 'Last Week',
+      from: moment().subtract(1, 'week').startOf('week'),
+      to: moment().subtract(1, 'week').endOf('week')
+    }, {
+      name: 'This Month',
+      from: moment().startOf('month'),
+      to: moment().endOf('month')
+    }, {
+      name: 'Next Month',
+      from: moment().add(1, 'month').startOf('month'),
+      to: moment().add(1, 'month').endOf('month')
+    }, {
+      name: 'Last Month',
+      from: moment().subtract(1, 'month').startOf('month'),
+      to: moment().subtract(1, 'month').endOf('month')
+    }
+  ]
 });

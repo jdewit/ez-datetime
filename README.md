@@ -10,8 +10,14 @@ View the <a href="http://rawgit.com/jdewit/ez-datetime/master/demo.html">DEMO</a
 
 ##Usage
 
+Datetime picker
 ```html
-<input type="text" ez-datetime-control ng-model="form.date" config="data.config"/>
+<input type="text" ez-datetime-control ng-model="form.date" min-date="someMinDate" max-date="someMaxDate" config="someConfigOverridingObject"/>
+```
+
+Datetime range picker
+```html
+<input type="text" ez-datetime-range-control from="form.startDate" to="form.dueDate" config="someConfigOverridingObject"/>
 ```
 
 ###Configuration

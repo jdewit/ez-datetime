@@ -5,23 +5,30 @@
     </button>
 
     <h4 class="modal-title">
-      {{ options.heading }}: <small>{{ form.date | ezDate:'lll' }}</small>
+      <i class="{{ options.headingIcon }}"></i>
+      {{ options.headingText }}
     </h4>
   </div>
   <div class="modal-body">
-    <div ez-date-picker from="form.from" to="form.to" ng-model="form.date" options="options"></div>
+    <div ez-date-picker ng-model="form.value" min-date="form.minDate" max-date="form.maxDate" options="options"></div>
 
-    <div ng-if="options.timepickerEnabled && !!form.date">
+    <div ng-if="options.timepickerEnabled && !!form.value">
       <hr>
-      <div ez-time-picker ng-model="form.date" options="options"></div>
+      <div ez-time-picker ng-model="form.value" options="options"></div>
     </div>
   </div>
   <div class="modal-footer">
+    <div class="left-btn-group">
+      <a class="btn btn-default clear-btn" title="Clear Date" ng-click="clear()" ng-if="!!form.value">
+        <span class="{{ options.clearBtnIcon }}"></span>
+      </a>
+    </div>
+
     <a class="btn btn-default" ng-click="dismiss()">
-      <i class="glyphicon glyphicon-remove"></i> {{ options.cancelBtnText }}
+      <i class="{{ options.cancelBtnIcon }}"></i> {{ options.cancelBtnText }}
     </a>
     <a class="btn btn-lg btn-primary" ng-click="ok()">
-      <i class="glyphicon glyphicon-ok"></i> {{ options.okBtnText }}
+      <i class="{{ options.okBtnIcon }}"></i> {{ options.okBtnText }}
     </a>
   </div>
 </div>

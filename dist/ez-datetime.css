@@ -7,6 +7,13 @@
 .ez-datetime-modal .glyphicon-time {
   color: #ccc;
 }
+.ez-datetime-modal .modal-footer .left-btn-group {
+  float: left;
+  margin-top: 6px;
+}
+.ez-datetime-modal .quick-select .dropdown-menu li {
+  text-align: left;
+}
 .ez-datetime-modal .range-from td.active {
   -webkit-border-top-left-radius: 4px;
   -webkit-border-bottom-left-radius: 4px;
@@ -22,6 +29,9 @@
   -moz-border-radius-bottomright: 4px;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
+}
+.ez-datetime-modal .clear-btn span {
+  line-height: 1.42857;
 }
 .ez-datetime-control {
   cursor: pointer;
@@ -42,6 +52,14 @@
 .ez-time-picker .meridiem-btn {
   background-color: #eee;
 }
+.ez-time-picker .dropdown-menu {
+  min-width: 60px;
+  max-height: 145px;
+  overflow-y: auto;
+}
+.ez-time-picker .dropdown-menu li {
+  text-align: center;
+}
 .datepicker {
   padding: 4px;
   margin-top: 1px;
@@ -50,7 +68,7 @@
   border-radius: 4px;
   direction: ltr;
 }
-.datepicker .table.day-view tr:last-child th {
+.datepicker .table.day-view tr th {
   border-bottom: solid 1px #ddd;
 }
 .datepicker.datepicker-rtl {
@@ -332,5 +350,8 @@
 .datepicker table tr td span.disabled,
 .datepicker table tr td span.disabled:hover {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.4;
+}
+.datepicker tbody td {
+  color: #337ab7;
 }
