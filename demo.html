@@ -70,7 +70,7 @@
 
     <form name="_form4">
       <a ez-datetime-range-control from="form.date4From" to="form.date4To" on-change="modelChanged()">
-        {{ (form.date4From | ezDate:'MMM Do, YYYY [at] h:mma')|| 'Start Date' }} - {{ (form.date4RangeTo | ezDate:'MMM Do, YYYY [at] h:mma') || 'End Date' }}
+        {{ (form.date4From | ezDate:'MMM Do, YYYY [at] h:mma')|| 'Start Date' }} - {{ (form.date4To | ezDate:'MMM Do, YYYY [at] h:mma') || 'End Date' }}
       </a>
     </form>
     Form Dirty State => {{ _form4.$dirty }}
