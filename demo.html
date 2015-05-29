@@ -58,7 +58,7 @@
         <input class="form-control" ez-datetime-control type="text" ng-model="form.date3" min-date="form.date3Min" max-date="form.date3Max" view-format="YYYY-MM-DD h:mma" ng-change="log('date3 changed')"/>
 
         <div class="input-group-addon">
-          <a ez-datetime-control ng-model="form.date3" view-format="YYYY-MM-DD h:mma">
+          <a ez-datetime-control ng-model="form.date3" min-date="form.date3Min" max-date="form.date3Max" view-format="YYYY-MM-DD h:mma" ng-change="log('date3 changed')"/>
             <i class="glyphicon glyphicon-calendar"></i>
           </a>
         </div>

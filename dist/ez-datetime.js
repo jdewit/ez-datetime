@@ -584,9 +584,11 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 
 angular.module('ez.datetime').directive('ezDatetimeControl', [
   'EzDatetimeService',
+  '$timeout',
   '$modal',
   function(
     DatetimeService,
+    $timeout,
     $modal
   ) {
     return {
@@ -640,6 +642,7 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
             scope: scope,
           }).result.then(function() {
             scope.ngModel = scope.form.value;
+            modelCtrl.$setDirty();
           });
         });
 
