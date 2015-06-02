@@ -39,6 +39,13 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
           scope.form.value = undefined;
         };
 
+        modelCtrl.$render = function() {
+          console.log('rend', attrs.required);
+          if (attrs.required) {
+            modelCtrl.$setValidity('required', !!modelCtrl.$modelValue);
+          }
+        };
+
         $element.bind('click', function() {
           if (attrs.disabled) {
             return;

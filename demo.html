@@ -85,7 +85,9 @@
     <h3>Input Range Selector</h3>
 
     <form name="_form5">
-      <input class="form-control" type="text" ez-datetime-range-control from="date5Range.from" to="date5Range.to" on-change="log('date5Range changed')" range-enabled="true"/>
+      <div ng-class="{'has-error': _form5.range5.$invalid}">
+        <input name="range5" class="form-control" type="text" ez-datetime-range-control from="date5Range.from" to="date5Range.to" on-change="log('date5Range changed')" required/>
+      </div>
     </form>
     Form Dirty State => {{ _form5.$dirty }}
     <br>

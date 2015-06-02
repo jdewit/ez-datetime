@@ -623,6 +623,13 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
           scope.form.value = undefined;
         };
 
+        modelCtrl.$render = function() {
+          console.log('rend', attrs.required);
+          if (attrs.required) {
+            modelCtrl.$setValidity('required', !!modelCtrl.$modelValue);
+          }
+        };
+
         $element.bind('click', function() {
           if (attrs.disabled) {
             return;
@@ -674,6 +681,7 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
       link: function(scope, $element, attrs) {
         var text;
         var setDirty = angular.noop;
+        var parentForm = $element.inheritedData('$formController');
 
         $element.addClass('ez-datetime-control');
 
@@ -717,9 +725,17 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
             parentForm.$setDirty();
           };
 
-          // init
           setInput();
         }
+
+        var render = function() {
+          console.log('rend', attrs.required);
+          if (attrs.required) {
+            parentForm.$setValidity(attrs.name, null, {required: !!scope.from && !!scope.to});
+          }
+
+          console.log('foro', parentForm);
+        };
 
         scope.clear = function() {
           scope.form.from = undefined; 
@@ -751,6 +767,7 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
             scope.to = scope.form.to;
 
             setDirty();
+            render();
 
             if (!!attrs.onChange) {
               $timeout(function() {
@@ -760,6 +777,7 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
           });
         });
 
+        render();
       }
     };
   }
