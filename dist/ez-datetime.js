@@ -161,6 +161,10 @@ angular.module('ez.datetime')
       name: 'Last Month',
       from: moment().subtract(1, 'month').startOf('month'),
       to: moment().subtract(1, 'month').endOf('month')
+    }, {
+      name: 'This Year',
+      from: moment().startOf('year'),
+      to: moment().endOf('year')
     }
   ]
 });
