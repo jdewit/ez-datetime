@@ -2,10 +2,12 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
   'EzDatetimeService',
   '$timeout',
   '$modal',
+  '$parse',
   function(
     DatetimeService,
     $timeout,
-    $modal
+    $modal,
+    $parse
   ) {
     return {
       restrict: 'EA',
@@ -59,6 +61,12 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
           }).result.then(function() {
             scope.ngModel = scope.form.value;
             modelCtrl.$setDirty();
+
+            if (attrs.ngChange) {
+              $timeout(function() {
+                $parse(attrs.ngChange)(scope.$parent);
+              });
+            }
           });
         });
 
