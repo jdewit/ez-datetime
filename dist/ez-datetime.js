@@ -686,6 +686,7 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
       link: function(scope, $element, attrs) {
         var text;
         var setDirty = angular.noop;
+        var setInput = angular.noop;
 
         $element.addClass('ez-datetime-control');
 
@@ -695,7 +696,7 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
         if ($element.is('input')) {
           var from, to;
 
-          var setInput = function() {
+          setInput = function() {
             if (scope.options.modelFormat === 'x') {
               from = parseInt(scope.from, 10);
               to = parseInt(scope.to, 10);
@@ -733,9 +734,21 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
           setInput();
         }
 
+        scope.$watch('from', function(n, o) {
+          if (n !== o) {
+            setInput();
+          }
+        });
+
+        scope.$watch('to', function(n, o) {
+          if (n !== o) {
+            setInput();
+          }
+        });
+
         scope.clear = function() {
-          scope.form.from = undefined; 
-          scope.form.to = undefined; 
+          scope.form.from = undefined;
+          scope.form.to = undefined;
         };
 
         $element.bind('click', function() {
