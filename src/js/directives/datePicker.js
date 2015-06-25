@@ -137,10 +137,10 @@ angular.module('ez.datetime').directive('ezDatePicker', [
                 display: startDecade + '-' + (startDecade + 9)
               },
               'leftDate': {
-                dateValue: moment(startDateMoment).subtract(9, 'year').unix()
+                dateValue: moment(startDateMoment).subtract(9, 'year')
               },
               'rightDate': {
-                dateValue: moment(startDateMoment).add(11, 'year').unix()
+                dateValue: moment(startDateMoment).add(11, 'year')
               },
               'dates': []
             };
@@ -184,10 +184,10 @@ angular.module('ez.datetime').directive('ezDatePicker', [
                 display: startDateMoment.format('YYYY')
               },
               'leftDate': {
-                dateValue: moment(startDateMoment).subtract(1, 'year').unix()
+                dateValue: moment(startDateMoment).subtract(1, 'year')
               },
               'rightDate': {
-                dateValue: moment(startDateMoment).add(1, 'year').unix()
+                dateValue: moment(startDateMoment).add(1, 'year')
               },
               'dates': []
             };
