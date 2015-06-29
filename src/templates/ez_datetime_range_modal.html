@@ -43,7 +43,7 @@
         </a>
 
         <ul class="dropdown-menu">
-          <li ng-repeat="shortcut in shortcuts"><a ng-click="select($index)">{{ shortcut.name }}</a></li>
+          <li ng-repeat="shortcut in shortcuts"><a ng-click="select($index)">{{ options.shortcutNamePrefix }}{{ shortcut.name }}</a></li>
         </ul>
       </span>
 
