@@ -120,6 +120,11 @@ angular.module('ez.datetime')
   shortcutsEnabled: true,
 
   /**
+   * Prefix for shortcut name
+   */
+  shortcutNamePrefix: '',
+
+  /**
    * Shortcut range options
    */
   shortcuts: [
