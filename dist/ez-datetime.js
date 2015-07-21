@@ -963,6 +963,33 @@ angular.module('ez.datetime').directive('ezTimePicker', [
   }
 ]);
 
+angular.module('ez.datetime').filter('ezDateAgo', [
+  'EzDatetimeConfig',
+  function(
+    EzDatetimeConfig
+  ) {
+    return function(v, format) {
+      if (!v) {
+        return;
+      }
+
+      if (!format) {
+        format = EzDatetimeConfig.viewFormat;
+      }
+
+      if (!isNaN(v)) {
+        v = parseInt(v, 10);
+      }
+
+      if (moment().diff(moment(v), 'h') < 4) {
+        return moment(v).fromNow();
+      } else {
+        return moment(v).format(format);
+      }
+    };
+  }
+]);
+
 angular.module('ez.datetime').filter('ezDate', [
   function() {
     return function(v, format) {
