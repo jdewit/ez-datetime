@@ -14,18 +14,30 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
       scope: {
         from: '=',
         to: '=',
+        shortcut: '=?',
         minDate: '=?',
         maxDate: '=?',
         config: '=?'
       },
       link: function(scope, $element, attrs) {
         var text;
+        var shortcut;
         var setDirty = angular.noop;
         var setInput = angular.noop;
 
         $element.addClass('ez-datetime-control');
 
         DatetimeService.resolveConfig(scope, attrs);
+
+        function getShortcut() {
+          for (var i = 0, l = scope.options.shortcuts.length; i < l; i++) {
+            if (scope.options.shortcuts[i].id === scope.shortcut) {
+              return scope.options.shortcuts[i];
+            }
+          }
+
+          return null;
+        }
 
         // implement input formatter
         if ($element.is('input')) {
@@ -84,6 +96,7 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
         scope.clear = function() {
           scope.form.from = undefined;
           scope.form.to = undefined;
+          scope.form.shortcut = undefined;
         };
 
         $element.bind('click', function() {
@@ -93,10 +106,20 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
 
           scope.form = {
             min: scope.minDate,
-            max: scope.maxDate,
-            from: scope.from,
-            to: scope.to
+            max: scope.maxDate
           };
+
+          if (!!scope.shortcut) {
+            shortcut = getShortcut(scope.shortcut);
+
+            scope.form.from = shortcut.from.format();
+            scope.form.to = shortcut.to.format();
+            scope.form.shortcut = shortcut.id;
+            scope.form.shortcutName = shortcut.name;
+          } else {
+            scope.form.from = scope.from;
+            scope.form.to = scope.to;
+          }
 
           $modal.open({
             templateUrl:'ez_datetime_range_modal.html',
@@ -109,6 +132,8 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
 
             scope.from = scope.form.from;
             scope.to = scope.form.to;
+            scope.shortcut = scope.form.shortcut;
+            scope.shortcutName = scope.form.shortcutName;
 
             setDirty();
 

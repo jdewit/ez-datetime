@@ -5,7 +5,7 @@ angular.module('ez.datetime').controller('EzDatetimeModalController', [
     $scope,
     $modalInstance
   ) {
-    var min, max;
+    var min, max, shortcut;
 
     $scope.shortcuts = [];
 
@@ -31,8 +31,10 @@ angular.module('ez.datetime').controller('EzDatetimeModalController', [
     });
 
     $scope.select = function(index) {
-      var shortcut = $scope.$parent.options.shortcuts[index];
+      shortcut = $scope.$parent.options.shortcuts[index];
 
+      $scope.form.shortcut = shortcut.id;
+      $scope.form.shortcutName = shortcut.name;
       $scope.form.from = shortcut.from.format();
       $scope.form.to = shortcut.to.format();
     };

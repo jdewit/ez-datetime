@@ -122,6 +122,11 @@ angular.module('ez.datetime')
   shortcutsEnabled: true,
 
   /**
+   * Set shortcut key as the value
+   */
+  shortcutAsValue: false,
+
+  /**
    * Prefix for shortcut name
    */
   shortcutNamePrefix: '',
@@ -131,42 +136,52 @@ angular.module('ez.datetime')
    */
   shortcuts: [
     {
+      id: 'today',
       name: 'Today',
       from: moment().startOf('day'),
       to: moment().endOf('day')
     }, {
+      id: 'tomorrow',
       name: 'Tomorrow',
       from: moment().add(1, 'days').startOf('day'),
       to: moment().add(1, 'days').endOf('day')
     }, {
+      id: 'yesterday',
       name: 'Yesterday',
       from: moment().subtract(1, 'days').startOf('day'),
       to: moment().subtract(1, 'days').endOf('day')
     }, {
+      id: 'this_week',
       name: 'This Week',
       from: moment().startOf('week'),
       to: moment().endOf('week')
     }, {
+      id: 'next_week',
       name: 'Next Week',
       from: moment().add(1, 'week').startOf('week'),
       to: moment().add(1, 'week').endOf('week')
     }, {
+      id: 'last_week',
       name: 'Last Week',
       from: moment().subtract(1, 'week').startOf('week'),
       to: moment().subtract(1, 'week').endOf('week')
     }, {
+      id: 'this_month',
       name: 'This Month',
       from: moment().startOf('month'),
       to: moment().endOf('month')
     }, {
+      id: 'next_month',
       name: 'Next Month',
       from: moment().add(1, 'month').startOf('month'),
       to: moment().add(1, 'month').endOf('month')
     }, {
+      id: 'last_month',
       name: 'Last Month',
       from: moment().subtract(1, 'month').startOf('month'),
       to: moment().subtract(1, 'month').endOf('month')
     }, {
+      id: 'this_year',
       name: 'This Year',
       from: moment().startOf('year'),
       to: moment().endOf('year')
@@ -181,7 +196,7 @@ angular.module('ez.datetime').controller('EzDatetimeModalController', [
     $scope,
     $modalInstance
   ) {
-    var min, max;
+    var min, max, shortcut;
 
     $scope.shortcuts = [];
 
@@ -207,8 +222,10 @@ angular.module('ez.datetime').controller('EzDatetimeModalController', [
     });
 
     $scope.select = function(index) {
-      var shortcut = $scope.$parent.options.shortcuts[index];
+      shortcut = $scope.$parent.options.shortcuts[index];
 
+      $scope.form.shortcut = shortcut.id;
+      $scope.form.shortcutName = shortcut.name;
       $scope.form.from = shortcut.from.format();
       $scope.form.to = shortcut.to.format();
     };
@@ -684,18 +701,30 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
       scope: {
         from: '=',
         to: '=',
+        shortcut: '=?',
         minDate: '=?',
         maxDate: '=?',
         config: '=?'
       },
       link: function(scope, $element, attrs) {
         var text;
+        var shortcut;
         var setDirty = angular.noop;
         var setInput = angular.noop;
 
         $element.addClass('ez-datetime-control');
 
         DatetimeService.resolveConfig(scope, attrs);
+
+        function getShortcut() {
+          for (var i = 0, l = scope.options.shortcuts.length; i < l; i++) {
+            if (scope.options.shortcuts[i].id === scope.shortcut) {
+              return scope.options.shortcuts[i];
+            }
+          }
+
+          return null;
+        }
 
         // implement input formatter
         if ($element.is('input')) {
@@ -754,6 +783,7 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
         scope.clear = function() {
           scope.form.from = undefined;
           scope.form.to = undefined;
+          scope.form.shortcut = undefined;
         };
 
         $element.bind('click', function() {
@@ -763,10 +793,20 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
 
           scope.form = {
             min: scope.minDate,
-            max: scope.maxDate,
-            from: scope.from,
-            to: scope.to
+            max: scope.maxDate
           };
+
+          if (!!scope.shortcut) {
+            shortcut = getShortcut(scope.shortcut);
+
+            scope.form.from = shortcut.from.format();
+            scope.form.to = shortcut.to.format();
+            scope.form.shortcut = shortcut.id;
+            scope.form.shortcutName = shortcut.name;
+          } else {
+            scope.form.from = scope.from;
+            scope.form.to = scope.to;
+          }
 
           $modal.open({
             templateUrl:'ez_datetime_range_modal.html',
@@ -779,6 +819,8 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
 
             scope.from = scope.form.from;
             scope.to = scope.form.to;
+            scope.shortcut = scope.form.shortcut;
+            scope.shortcutName = scope.form.shortcutName;
 
             setDirty();
 
@@ -981,7 +1023,7 @@ angular.module('ez.datetime').filter('ezDateAgo', [
         v = parseInt(v, 10);
       }
 
-      if (moment().diff(moment(v), 'h') < 4) {
+      if (moment().diff(moment(v), 'h') < 24) {
         return moment(v).fromNow();
       } else {
         return moment(v).format(format);

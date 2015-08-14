@@ -85,11 +85,13 @@
     <h3>Input Range Selector</h3>
 
     <form name="_form5">
-      <input class="form-control" type="text" ez-datetime-range-control from="date5Range.from" to="date5Range.to" on-change="log('date5Range changed')" range-enabled="true"/>
+      <input class="form-control" type="text" ez-datetime-range-control from="date5Range.from" to="date5Range.to" shortcut="form.date5Shortcut" on-change="log('date5Range changed')" range-enabled="true"/>
     </form>
     Form Dirty State => {{ _form5.$dirty }}
     <br>
     Model value => {{ form.date5Range || 'null' }}
+    <br>
+    Shortcut => {{ form.date5Shortcut }}
 
     <hr>
 
