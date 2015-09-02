@@ -226,8 +226,18 @@ angular.module('ez.datetime').controller('EzDatetimeModalController', [
 
       $scope.form.shortcut = shortcut.id;
       $scope.form.shortcutName = shortcut.name;
-      $scope.form.from = shortcut.from.format();
-      $scope.form.to = shortcut.to.format();
+
+      if (!!shortcut.from) {
+        $scope.form.from = shortcut.from.format();
+      } else {
+        $scope.form.from = null;
+      }
+
+      if (!!shortcut.to) {
+        $scope.form.to = shortcut.to.format();
+      } else {
+        $scope.form.to = null;
+      }
     };
 
     $scope.dismiss = function() {
@@ -799,8 +809,18 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
           if (!!scope.shortcut) {
             shortcut = getShortcut(scope.shortcut);
 
-            scope.form.from = shortcut.from.format();
-            scope.form.to = shortcut.to.format();
+            if (!!shortcut.from) {
+              scope.form.from = shortcut.from.format();
+            } else {
+              scope.form.from = null;
+            }
+
+            if (!!shortcut.to) {
+              scope.form.to = shortcut.to.format();
+            } else {
+              scope.form.to = null;
+            }
+
             scope.form.shortcut = shortcut.id;
             scope.form.shortcutName = shortcut.name;
           } else {
@@ -1044,6 +1064,27 @@ angular.module('ez.datetime').filter('ezDate', [
       }
 
       return moment(v).format(format);
+    };
+  }
+]);
+
+angular.module('ez.datetime').filter('ezDatetimeShortcut', [
+  'EzDatetimeConfig',
+  function(
+    EzDatetimeConfig
+  ) {
+    return function(v) {
+      if (!v) {
+        return '';
+      }
+
+      for (var i = 0, l = EzDatetimeConfig.shortcuts.length; i < l; i++) {
+        if (EzDatetimeConfig.shortcuts[i].id === v) {
+          return EzDatetimeConfig.shortcuts[i].name;
+        }
+      }
+
+      return '';
     };
   }
 ]);

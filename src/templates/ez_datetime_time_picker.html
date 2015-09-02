@@ -1,8 +1,8 @@
 <table class="ez-time-picker">
   <tr>
     <td>
-      <div class="dropdown">
-        <a class="btn btn-default dropdown-toggle">
+      <div dropdown>
+        <a dropdown-toggle class="btn btn-default">
           {{ ngModel | ezDate:options.hourFormat }}
         </a>
         <ul class="dropdown-menu dropdown-pointer">
@@ -12,8 +12,8 @@
     </td>
     <td>:</td>
     <td>
-      <div class="dropdown">
-        <a class="btn btn-default dropdown-toggle">
+      <div dropdown>
+        <a dropdown-toggle class="btn btn-default">
           {{ ngModel | ezDate:options.minuteFormat }}
         </a>
         <ul class="dropdown-menu dropdown-pointer">
@@ -26,11 +26,11 @@
     </td>
     <td ng-if="options.secondsEnabled">:</td>
     <td ng-if="options.secondsEnabled">
-      <div class="dropdown">
-        <a class="btn btn-default dropdown-toggle">
+      <div dropdown>
+        <a dropdown-toggle class="btn btn-default">
           {{ ngModel | ezDate:options.secondFormat }}
         </a>
-        <ul class="dropdown-menu dropdown-pointer">
+        <ul class="dropdown-pointer">
           <li ng-repeat="second in data.seconds">
             <a ng-click="setSecond(second)">{{ second }}</a>
           </li>

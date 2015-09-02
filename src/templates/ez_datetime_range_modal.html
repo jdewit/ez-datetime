@@ -35,8 +35,8 @@
   </div>
   <div class="modal-footer">
     <div class="left-btn-group">
-      <span class="quick-select dropdown dropup" ng-if="options.shortcutsEnabled && shortcuts.length > 0">
-        <a class="btn btn-default dropdown-toggle">
+      <span dropdown class="quick-select dropup" ng-if="options.shortcutsEnabled && shortcuts.length > 0">
+        <a dropdown-toggle class="btn btn-default">
           <i class="{{ options.shortcutBtnIcon }}"></i>
           <span ng-if="!form.shortcut">{{ options.shortcutBtnText }}</span>
           <span ng-if="!!form.shortcut">{{ form.shortcutName }}</span>
