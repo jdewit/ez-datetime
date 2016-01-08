@@ -5,6 +5,11 @@ angular.module('ez.datetime')
 .constant('EzDatetimeConfig', {
 
   /**
+   * The utc offset, leave undefined to use browsers offset
+   */
+  utcOffset: undefined,
+
+  /**
    * The minimum view of the calendar
    * @options [year, month, day]
    */
@@ -1053,8 +1058,11 @@ angular.module('ez.datetime').filter('ezDateAgo', [
 ]);
 
 angular.module('ez.datetime').filter('ezDate', [
-  function() {
-    return function(v, format) {
+  'EzDatetimeConfig',
+  function(
+    EzDatetimeConfig
+  ) {
+    return function(v, viewFormat, utcOffset) {
       if (!v) {
         return;
       }
@@ -1063,7 +1071,20 @@ angular.module('ez.datetime').filter('ezDate', [
         v = parseInt(v, 10);
       }
 
-      return moment(v).format(format);
+      if (viewFormat === undefined) {
+        viewFormat = EzDatetimeConfig.viewFormat;
+      }
+
+      if (utcOffset === undefined) {
+        utcOffset = EzDatetimeConfig.utcOffset;
+      }
+
+      if (typeof utcOffset !== 'undefined') {
+        return moment(v).utcOffset(utcOffset).format(viewFormat);
+      } else {
+        return moment(v).format(viewFormat);
+      }
+
     };
   }
 ]);

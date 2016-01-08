@@ -3,6 +3,11 @@ angular.module('ez.datetime')
 .constant('EzDatetimeConfig', {
 
   /**
+   * The utc offset, leave undefined to use browsers offset
+   */
+  utcOffset: undefined,
+
+  /**
    * The minimum view of the calendar
    * @options [year, month, day]
    */

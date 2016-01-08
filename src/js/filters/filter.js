@@ -1,6 +1,9 @@
 angular.module('ez.datetime').filter('ezDate', [
-  function() {
-    return function(v, format) {
+  'EzDatetimeConfig',
+  function(
+    EzDatetimeConfig
+  ) {
+    return function(v, viewFormat, utcOffset) {
       if (!v) {
         return;
       }
@@ -9,7 +12,20 @@ angular.module('ez.datetime').filter('ezDate', [
         v = parseInt(v, 10);
       }
 
-      return moment(v).format(format);
+      if (viewFormat === undefined) {
+        viewFormat = EzDatetimeConfig.viewFormat;
+      }
+
+      if (utcOffset === undefined) {
+        utcOffset = EzDatetimeConfig.utcOffset;
+      }
+
+      if (typeof utcOffset !== 'undefined') {
+        return moment(v).utcOffset(utcOffset).format(viewFormat);
+      } else {
+        return moment(v).format(viewFormat);
+      }
+
     };
   }
 ]);
