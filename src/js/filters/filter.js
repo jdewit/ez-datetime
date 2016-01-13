@@ -3,29 +3,32 @@ angular.module('ez.datetime').filter('ezDate', [
   function(
     EzDatetimeConfig
   ) {
-    return function(v, viewFormat, utcOffset) {
+    return function(v, viewFormat, isUtc) {
       if (!v) {
         return;
-      }
-
-      if (!isNaN(v)) {
-        v = parseInt(v, 10);
       }
 
       if (viewFormat === undefined) {
         viewFormat = EzDatetimeConfig.viewFormat;
       }
 
-      if (utcOffset === undefined) {
-        utcOffset = EzDatetimeConfig.utcOffset;
+      if (isUtc === undefined) {
+        isUtc = EzDatetimeConfig.isUtc;
       }
 
-      if (typeof utcOffset !== 'undefined') {
-        return moment(v).utcOffset(utcOffset).format(viewFormat);
+      if (moment.isMoment(v)) {
+        return v.format(viewFormat);
       } else {
-        return moment(v).format(viewFormat);
-      }
+        if (!isNaN(v)) {
+          v = parseInt(v, 10);
+        }
 
+        if (isUtc) {
+          return moment.utc(v).format(viewFormat);
+        } else {
+          return moment(v).format(viewFormat);
+        }
+      }
     };
   }
 ]);
