@@ -1,9 +1,9 @@
 angular.module('ez.datetime').controller('EzDatetimeModalController', [
   '$scope',
-  '$modalInstance',
+  '$uibModalInstance',
   function(
     $scope,
-    $modalInstance
+    $uibModalInstance
   ) {
     var min, max, shortcut;
 
@@ -50,11 +50,11 @@ angular.module('ez.datetime').controller('EzDatetimeModalController', [
     };
 
     $scope.dismiss = function() {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
 
     $scope.ok = function() {
-      $modalInstance.close();
+      $uibModalInstance.close();
     };
   }
 ]);
