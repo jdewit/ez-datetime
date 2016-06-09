@@ -2,12 +2,12 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
   'EzDatetimeService',
   '$parse',
   '$timeout',
-  '$modal',
+  '$uibModal',
   function(
     DatetimeService,
     $parse,
     $timeout,
-    $modal
+    $uibModal
   ) {
     return {
       restrict: 'EA',
@@ -131,7 +131,7 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
             scope.form.to = scope.to;
           }
 
-          $modal.open({
+          $uibModal.open({
             templateUrl:'ez_datetime_range_modal.html',
             controller: 'EzDatetimeModalController',
             scope: scope,

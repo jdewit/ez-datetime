@@ -1,12 +1,12 @@
 angular.module('ez.datetime').directive('ezDatetimeControl', [
   'EzDatetimeService',
   '$timeout',
-  '$modal',
+  '$uibModal',
   '$parse',
   function(
     DatetimeService,
     $timeout,
-    $modal,
+    $uibModal,
     $parse
   ) {
     return {
@@ -54,7 +54,7 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
             to: scope.to
           };
 
-          $modal.open({
+          $uibModal.open({
             templateUrl: 'ez_datetime_modal.html',
             controller: 'EzDatetimeModalController',
             scope: scope,

@@ -196,10 +196,10 @@ angular.module('ez.datetime')
 
 angular.module('ez.datetime').controller('EzDatetimeModalController', [
   '$scope',
-  '$modalInstance',
+  '$uibModalInstance',
   function(
     $scope,
-    $modalInstance
+    $uibModalInstance
   ) {
     var min, max, shortcut;
 
@@ -246,11 +246,11 @@ angular.module('ez.datetime').controller('EzDatetimeModalController', [
     };
 
     $scope.dismiss = function() {
-      $modalInstance.dismiss();
+      $uibModalInstance.dismiss();
     };
 
     $scope.ok = function() {
-      $modalInstance.close();
+      $uibModalInstance.close();
     };
   }
 ]);
@@ -626,12 +626,12 @@ angular.module('ez.datetime').directive('ezDatePicker', [
 angular.module('ez.datetime').directive('ezDatetimeControl', [
   'EzDatetimeService',
   '$timeout',
-  '$modal',
+  '$uibModal',
   '$parse',
   function(
     DatetimeService,
     $timeout,
-    $modal,
+    $uibModal,
     $parse
   ) {
     return {
@@ -679,7 +679,7 @@ angular.module('ez.datetime').directive('ezDatetimeControl', [
             to: scope.to
           };
 
-          $modal.open({
+          $uibModal.open({
             templateUrl: 'ez_datetime_modal.html',
             controller: 'EzDatetimeModalController',
             scope: scope,
@@ -704,12 +704,12 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
   'EzDatetimeService',
   '$parse',
   '$timeout',
-  '$modal',
+  '$uibModal',
   function(
     DatetimeService,
     $parse,
     $timeout,
-    $modal
+    $uibModal
   ) {
     return {
       restrict: 'EA',
@@ -833,7 +833,7 @@ angular.module('ez.datetime').directive('ezDatetimeRangeControl', [
             scope.form.to = scope.to;
           }
 
-          $modal.open({
+          $uibModal.open({
             templateUrl:'ez_datetime_range_modal.html',
             controller: 'EzDatetimeModalController',
             scope: scope,
